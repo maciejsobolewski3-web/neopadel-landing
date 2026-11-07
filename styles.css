@@ -125,12 +125,6 @@
 .talk h3{font-size:clamp(34px,4.6vw,70px);line-height:1.05;letter-spacing:-.05em}
 .talk .contact-small{margin-top:30px;color:#e3a1e8}
 /* Kierunki rozwoju */
-.roadmap{padding:110px 0}
-.roadmap-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
-.roadmap h2{font-size:clamp(34px,4.2vw,60px);line-height:1.06}
-.road-chips{display:flex;flex-wrap:wrap;gap:12px;margin-top:36px}
-.road-chips span{padding:14px 20px;border-radius:999px;border:1px dashed #c467cb88;font-size:15px;color:#efe7f3;background:#ac27b40f}
-.road-chips span:before{content:'W planach';display:inline-block;margin-right:12px;padding:3px 8px;border-radius:999px;background:#ac27b433;color:#f0b3f4;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
 /* Finał */
 .finale{position:relative;isolation:isolate;overflow:hidden;min-height:100svh;display:grid;place-items:center;text-align:center;padding:140px 0}
 .finale-video{opacity:.6}
@@ -141,10 +135,10 @@
 @media(max-width:1050px){.connected-grid,.flow-grid{gap:40px}.phone{width:240px}.flow-phone{width:270px;right:0}.panel-card{width:300px}.phones{height:540px}}
 @media(max-width:760px){
 .manifest{padding:110px 0 80px}.moments{grid-template-columns:1fr;margin-top:50px}.moments li,.moments li+li{padding:20px 0;border-left:0;border-bottom:1px solid var(--line)}.manifest-close{margin-top:40px}
-.connected{padding:80px 0}.connected-grid,.flow-grid,.team-head,.talk,.roadmap-grid{grid-template-columns:1fr}.phones{height:470px}.phone{width:200px;border-width:8px;border-radius:36px}.phone-screen{border-radius:28px}.phones .phone:last-child{left:40%;top:50px}
+.connected{padding:80px 0}.connected-grid,.flow-grid,.team-head,.talk{grid-template-columns:1fr}.phones{height:470px}.phone{width:200px;border-width:8px;border-radius:36px}.phone-screen{border-radius:28px}.phones .phone:last-child{left:40%;top:50px}
 .flow{padding:80px 0 30px}.flow-grid{gap:0}.flow-stage{order:-1;top:74px;height:380px;z-index:3;margin:0 -20px;background:linear-gradient(var(--ink) 90%,#0c0c1100)}.flow-phone{width:170px;right:16px;top:8px;border-width:7px;border-radius:32px}.flow-phone .phone-screen{border-radius:25px}.panel-card{width:220px;left:16px;top:40px;padding:14px}.panel-card>b{font-size:19px}.panel-fields span{font-size:11px;padding:8px 10px}.flow-step{min-height:52vh;justify-content:flex-end;padding-bottom:12vh}.flow-step h3{font-size:26px}.flow-step p{font-size:15px}
 .app-top{padding:18px 14px 12px}.app-top b{font-size:17px}.scr{padding:70px 10px 10px}.post{padding:12px}.post-title{font-size:15px}.post p{font-size:11px}.app-btn{font-size:12px;padding:9px}.lock-time{font-size:44px}.notif{padding:10px 12px}.notif b{font-size:12px}.notif span{font-size:10px}.event-card{padding:14px}.event-card>b{font-size:17px}.seat-count{font-size:34px}
-.reach{min-height:80svh;padding:90px 0}.team{padding:90px 0}.support-cards{grid-template-columns:1fr}.support-cards div,.support-cards div+div{padding:22px 0;border-left:0;border-bottom:1px solid var(--line)}.talk{margin-top:60px}.roadmap{padding:80px 0}.finale{min-height:85svh}
+.reach{min-height:80svh;padding:90px 0}.team{padding:90px 0}.support-cards{grid-template-columns:1fr}.support-cards div,.support-cards div+div{padding:22px 0;border-left:0;border-bottom:1px solid var(--line)}.talk{margin-top:60px}.finale{min-height:85svh}
 }
 
 /* Żywe elementy zamiast ikon 3D: sieć graczy, rozmowa ze wsparciem, czat, karty koncepcji */
@@ -193,30 +187,10 @@
 .typing i{width:7px;height:7px;border-radius:50%;background:#a79db2;animation:dot 1s infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
 @keyframes dot{50%{transform:translateY(-4px);opacity:.5}}
-.concepts{position:relative;height:440px}
-.concept{position:absolute;width:330px;padding:22px;border-radius:20px;background:#17131d;border:1px dashed #c467cb66;box-shadow:0 30px 70px #000a}
-.concept.league{right:150px;top:0;transform:rotate(-3deg)}
-.concept.campaign{right:0;top:190px;transform:rotate(3deg)}
-.concepts.in .concept{animation:enter 1s both}.concepts.in .campaign{animation-delay:.2s}
-.concept-tag{display:inline-block;padding:4px 9px;border-radius:999px;background:#ac27b433;color:#f0b3f4;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
-.concept>b{display:block;font-size:19px;font-weight:500;margin:14px 0 14px;letter-spacing:-.02em}
-.concept ol{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.concept li{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:#ffffff08;font-size:14px}
-.concept li span{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:11px;background:#ffffff14}
-.concept li:first-child span{background:linear-gradient(135deg,#6f3fe0,#c02bc9)}
-.concept li em{margin-left:auto;font-style:normal;color:#a79db2;font-size:13px}
-.spark{display:flex;align-items:flex-end;gap:7px;height:90px;padding:6px 0 12px}
-.spark i{flex:1;height:calc(var(--h)*100%);border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#c02bc9,#6f3fe0);transform-origin:bottom;transform:scaleY(.1)}
-.concepts.in .spark i{animation:bar .9s cubic-bezier(.16,.84,.24,1) both .5s}
-@keyframes bar{to{transform:none}}
-.kpis{display:flex;gap:12px}
-.kpis span{flex:1;padding:10px 12px;border-radius:10px;background:#ffffff08;font-size:18px;font-weight:500}
-.kpis small{display:block;font-size:11px;color:#a79db2;font-weight:400}
-@media(max-width:1050px){.call-card{right:40px}.concept.league{right:90px}}
+@media(max-width:1050px){.call-card{right:40px}}
 @media(max-width:760px){
 .support-ui{height:auto;display:grid;gap:16px}.call-card,.week-card{position:static;width:100%}
 .chat{justify-self:stretch}.chat-body{min-height:270px}.msg{font-size:14px}
-.concepts{height:auto;display:grid;gap:16px}.concept{position:static;width:100%;transform:none!important}
 }
 /* Prawdziwy panel: mała karta z ekranami w sekcji Panel klubu */
 .browser{border-radius:16px;overflow:hidden;background:#110e17;border:1px solid #ffffff1f;box-shadow:0 50px 120px #000c,0 0 0 1px #00000040}
