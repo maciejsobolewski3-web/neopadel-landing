@@ -194,7 +194,7 @@ function npSave() { try { localStorage.setItem(NP_KEY, JSON.stringify({ user: NP
 function npSignIn(name, email) { email = (email || 'jan@klub.pl').toLowerCase(); NP.user = { name: name || 'Jan Kowalski', email }; if (!NP.db[email]) NP.db[email] = DEMO[email] ? DEMO[email].clubs() : []; NP.clubs = NP.db[email]; npSave(); syncAccountButton(); trigger = null; }
 function npResetDemo() { const e = NP.user.email; NP.db[e] = DEMO[e].clubs(); NP.clubs = NP.db[e]; npSave(); cw = { i: -1, step: 0, d: {} }; route(); }
 function npSignOut() { NP.user = null; NP.clubs = []; npSave(); syncAccountButton(); location.hash = '#/'; }
-function syncAccountButton() { const b = $('[data-login]'); if (!b) return; if (NP.user) { b.innerHTML = `<span class="nav-avatar">${initials(NP.user.name)}</span>Twoje konto`; b.dataset.account = '1'; } else { b.textContent = 'Zaloguj się'; delete b.dataset.account; } }
+function syncAccountButton() { const b = $('[data-login]'), m = $('.nav-acct'), sl = $('[data-login-sheet]'); if (!b || !m) return; b.hidden = !!NP.user; m.hidden = !NP.user; m.open = false; if (sl) sl.textContent = NP.user ? 'Twoje konto' : 'Zaloguj się'; if (!NP.user) return; $('.nav-avatar', m).textContent = initials(NP.user.name).slice(0, 2); $('[data-acct-name]', m).textContent = NP.user.name; $('[data-acct-mail]', m).textContent = NP.user.email; }
 const STATUS = { draft: ['Szkic', 'Dokończ tworzenie klubu'], review: ['W weryfikacji', 'Sprawdzamy dane firmy. Panel już działa.'], active: ['Aktywny', 'Klub widoczny dla graczy w aplikacji.'] };
 const esc = s => escapeHtml(s == null ? '' : s);
 
@@ -283,6 +283,7 @@ function route(){
  closeMenu();
  if(!firstRender){window.scrollTo({top:0,behavior:'instant'});$('#main').focus({preventScroll:true});}
  firstRender=false;
+ onScroll();
  enhance();
 }
 // Scroll-driven motion for the home page: reveals, the event flow stage and the video loops.
@@ -361,8 +362,12 @@ function setStep(stage,n){
  const count=$('[data-count]',stage);clearInterval(countTimer);count.textContent='14';stage.classList.remove('full');
  if(n===3){let c=14;countTimer=setInterval(()=>{c++;count.textContent=c;if(c>=16){clearInterval(countTimer);stage.classList.add('full');}},520);}
 }
-function closeMenu(){$('#nav-links').classList.remove('open');$('#menu-toggle').setAttribute('aria-expanded','false');$$('.nav-more').forEach(x=>x.open=false)}
-$('#menu-toggle').addEventListener('click',()=>{const open=$('#nav-links').classList.toggle('open');$('#menu-toggle').setAttribute('aria-expanded',String(open));});
+function closeMenu(){$('#nav-links').classList.remove('open');document.documentElement.classList.remove('menu-open');$('#menu-toggle').setAttribute('aria-expanded','false');$$('.nav-pop').forEach(x=>x.open=false)}
+// Header turns into a glass bar once the page scrolls; on the home hero the logo waits until the big hero logo is gone.
+function onScroll(){const h=$('#header');h.classList.toggle('scrolled',scrollY>8);h.classList.toggle('past-hero',document.body.dataset.page!=='home'||scrollY>innerHeight*.45);}addEventListener('scroll',onScroll,{passive:true});
+document.addEventListener('click',e=>{$$('.nav-pop[open]').forEach(d=>{if(!d.contains(e.target))d.open=false;});});
+$$('.nav-pop').forEach(d=>d.addEventListener('toggle',()=>{if(d.open)$$('.nav-pop[open]').forEach(o=>o!==d&&(o.open=false));}));
+$('#menu-toggle').addEventListener('click',()=>{const open=$('#nav-links').classList.toggle('open');document.documentElement.classList.toggle('menu-open',open);$('#menu-toggle').setAttribute('aria-expanded',String(open));});
 const dialog=$('#onboarding');let trigger=null;
 function openDialog(content){$('#dialog-content').innerHTML=content;$('#dialog-content').classList.remove('step-in');void $('#dialog-content').offsetWidth;$('#dialog-content').classList.add('step-in');$('#onboarding').classList.toggle('wide',content.includes('wiz-top'));$('#onboarding').classList.remove('auth');if(!dialog.open)dialog.showModal();$('#dialog-title')?.focus();}
 // Onboarding wizard: what you need → one question → your path with a ready e-mail. State lives only in memory.
@@ -420,8 +425,10 @@ document.addEventListener('submit',e=>{
 function login(){auth('login');}
 function selectTab(button,auto=false){$$('[data-tab]').forEach(b=>{b.setAttribute('aria-selected',String(b===button));b.tabIndex=b===button?0:-1;});$$('[data-pane]').forEach(p=>p.classList.toggle('on',p.dataset.pane===button.dataset.tab));if(!auto)stopShots();}
 document.addEventListener('click',e=>{const b=e.target.closest('button,a');if(!b)return;
- if(b.hasAttribute('data-onboard')){trigger=b;onboard();}
- if(b.hasAttribute('data-login')){trigger=b;if(b.dataset.account){location.hash='#/konto';}else login();}
+ if(b.hasAttribute('data-onboard')){closeMenu();trigger=b;onboard();}
+ if(b.hasAttribute('data-login-sheet')){closeMenu();if(NP.user){location.hash='#/konto';}else{trigger=$('#menu-toggle');login();}return;}
+ if(b.closest('.acct-menu'))closeMenu();
+ if(b.hasAttribute('data-login')){trigger=b;login();}
  if(b.hasAttribute('data-stage'))showStage(b.dataset.stage);
  if(b.hasAttribute('data-need'))needPath(b.dataset.need);
  if(b.hasAttribute('data-detail'))wizSummary(b.dataset.detail);
