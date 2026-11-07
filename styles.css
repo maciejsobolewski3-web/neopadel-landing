@@ -311,3 +311,80 @@ html,body{overflow-x:clip}
 .courts-links .text-link{color:#e9e2ee}
 @media(max-width:1050px){.configurator{grid-template-columns:1fr}.court3d{min-height:480px}.config-models{grid-template-columns:repeat(4,1fr)}.courts-head{grid-template-columns:1fr;gap:24px}}
 @media(max-width:760px){.courts{padding:90px 0 70px}.court3d{min-height:360px;border-radius:16px}.config-models{grid-template-columns:1fr 1fr}.config-panel{padding:18px}.c3d-dim{font-size:10px}}
+/* Hero: dwie szklane karty — aplikacja dla klubu i korty dla inwestora (pomysł z koncepcji Olka) */
+.hero-split{position:absolute;left:50%;bottom:30px;translate:-50% 0;width:min(900px,calc(100% - 40px));display:grid;grid-template-columns:1fr 1fr;gap:14px;z-index:2}
+.glass-card{display:flex;align-items:center;gap:16px;padding:12px 18px 12px 12px;border-radius:20px;background:linear-gradient(135deg,#ffffff1f,#ffffff08);border:1px solid #ffffff33;box-shadow:0 20px 50px #0007,inset 0 1px 0 #ffffff33;-webkit-backdrop-filter:blur(18px) saturate(1.5);backdrop-filter:blur(18px) saturate(1.5);transition:transform .35s cubic-bezier(.16,.84,.24,1),border-color .3s,background .3s}
+.glass-card:hover{transform:translateY(-3px);border-color:#ffffff66;background:linear-gradient(135deg,#ffffff2b,#ffffff10)}
+.glass-card img{width:64px;height:64px;flex:none;object-fit:cover;object-position:top;border-radius:12px;box-shadow:0 6px 16px #0006}
+.glass-card small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#f0c6f3;margin-bottom:5px}
+.glass-card b{display:block;font-size:15px;font-weight:500;line-height:1.35;color:#fff}
+@media(max-width:760px){.hero-split{grid-template-columns:1fr;gap:10px;bottom:22px}.glass-card{padding:10px 14px 10px 10px;gap:12px}.glass-card img{width:48px;height:48px;border-radius:10px}.glass-card b{font-size:13px}.hero-note{max-width:300px}}
+@media(max-height:820px) and (min-width:761px){.hero-split{bottom:20px}.glass-card img{width:54px;height:54px}}
+/* Zakładka Korty (#/korty): budowa kortów na bazie treści redesignu z repo + konfigurator */
+.k-hero{padding:150px 0 90px}
+.k-hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:60px;align-items:center}
+.k-hero .kinetic-big{font-size:clamp(44px,6vw,92px)}
+.k-lead{font-size:clamp(16px,1.35vw,19px);color:#cbc4d2;line-height:1.65;max-width:560px;margin-top:26px}
+.k-actions{display:flex;align-items:center;gap:30px;flex-wrap:wrap;margin-top:34px}
+.k-actions .text-link{margin-top:0}
+.k-hero-photo{position:relative;border-radius:22px;overflow:hidden;border:1px solid #ffffff1c;box-shadow:0 40px 90px #000a}
+.k-hero-photo img{width:100%;aspect-ratio:4/3;object-fit:cover}
+.k-hero-photo span{position:absolute;left:16px;bottom:16px;font-size:12px;letter-spacing:.08em;color:#fff;background:#0c0c11b3;border:1px solid #ffffff22;padding:8px 12px;border-radius:999px;backdrop-filter:blur(8px)}
+.k-config{padding:90px 0}
+.k-sec{padding:100px 0}
+.k-head{max-width:900px;margin-bottom:44px}
+.k-head h2,.k-split h2{font-size:clamp(32px,4vw,58px);line-height:1.06}
+.k-models{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.k-model{border-radius:20px;overflow:hidden;background:linear-gradient(180deg,#1a1521,#141019);border:1px solid #ffffff17;display:flex;flex-direction:column}
+.k-model img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;background:#fff}
+.k-model>div{padding:20px 20px 24px}
+.k-tag{display:inline-block;padding:4px 9px;border-radius:999px;background:#ac27b433;color:#f0b3f4;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.k-model h3{font-size:24px;font-weight:500;letter-spacing:-.03em;margin:12px 0 4px}
+.k-model small{display:block;font-size:12px;color:#a79db2;margin-bottom:12px}
+.k-model p{font-size:14px;color:#cbc4d2;line-height:1.55}
+.k-model b{display:block;font-size:12px;font-weight:600;color:#e6b5ea;margin:16px 0 8px}
+.k-model ul,.k-list,.k-turf ul{list-style:none;padding:0;margin:0;display:grid;gap:7px}
+.k-model li,.k-list li,.k-turf li{font-size:13px;color:#d6cfdc;padding-left:18px;position:relative}
+.k-model li:before,.k-list li:before,.k-turf li:before{content:'';position:absolute;left:0;top:7px;width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,#c02bc9,#6f3fe0)}
+.k-split{display:grid;grid-template-columns:1fr 1.1fr;gap:60px;align-items:center}
+.k-chips{display:flex;flex-wrap:wrap;gap:10px}
+.k-chips span{padding:13px 18px;border-radius:999px;border:1px solid #ffffff22;background:#ffffff08;font-size:15px;color:#efe7f3}
+.k-specs{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+.k-specs>div{padding:30px 26px 0 0}
+.k-specs>div+div{padding-left:26px;border-left:1px solid var(--line)}
+.k-specs b{display:block;font-size:clamp(26px,2.6vw,40px);font-weight:500;letter-spacing:-.04em;background:linear-gradient(95deg,#f08bf5,#7b55f0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.k-specs h3{font-size:17px;font-weight:500;margin:10px 0 8px}
+.k-specs p{font-size:14px;color:#a9a1b2}
+.k-turfs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.k-turf{position:relative;overflow:hidden;padding:26px;border-radius:20px;background:linear-gradient(180deg,#1a1521,#141019);border:1px solid #ffffff17}
+.k-turf i{position:absolute;right:-30px;top:-30px;width:150px;height:150px;border-radius:50%;background:var(--c);filter:blur(40px);opacity:.55}
+.k-turf h3{font-size:22px;font-weight:500;letter-spacing:-.02em;margin:14px 0 16px}
+.k-infra{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.k-infra .tile{min-height:0;padding-bottom:26px}
+.k-infra .k-list{margin-top:18px}
+.k-auto{display:grid;gap:10px;margin-top:16px;padding:30px;border-radius:22px;background:radial-gradient(600px 300px at 90% 0%,#ac27b433,transparent 70%),linear-gradient(180deg,#1a1521,#141019);border:1px solid #ffffff17;transition:border-color .3s}
+.k-auto:hover{border-color:#c467cb66}
+.k-auto .eyebrow{margin:0}
+.k-auto b{font-size:clamp(22px,2.2vw,32px);font-weight:500;letter-spacing:-.03em}
+.k-auto p{color:#a9a1b2;max-width:720px}
+.k-auto .text-link{justify-self:start;margin-top:8px}
+.k-steps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(6,1fr);position:relative}
+.k-steps:before{content:'';position:absolute;left:0;right:0;top:9px;height:1px;background:linear-gradient(90deg,#c02bc9,#6f3fe0 60%,#ffffff22)}
+.k-steps li{position:relative;padding:36px 22px 0 0}
+.k-steps li:before{content:'';position:absolute;left:0;top:2px;width:15px;height:15px;border-radius:50%;background:#0c0c11;border:2px solid #d277d9;box-shadow:0 0 0 4px #0c0c11}
+.k-steps.in li:before{animation:dayon2 .5s both calc(.2s + var(--i)*.12s)}
+@keyframes dayon2{to{background:#d277d9}}
+.k-steps h3{font-size:17px;font-weight:500;margin-bottom:8px}
+.k-steps p{font-size:13px;color:#a9a1b2;line-height:1.5}
+.k-projects{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:10px}
+.k-projects .tile{min-height:0;padding-bottom:26px}
+.k-meta{font-size:12px;color:#e6b5ea;letter-spacing:.04em;margin-bottom:10px;display:block}
+.k-why{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--line)}
+.k-why li{padding:22px 20px 22px 0;border-bottom:1px solid var(--line);display:grid;gap:6px}
+.k-why li:nth-child(even){padding-left:20px;border-left:1px solid var(--line)}
+.k-why b{font-size:18px;font-weight:500}
+.k-why span{font-size:14px;color:#a9a1b2}
+.k-contact{display:flex;align-items:center;justify-content:center;gap:26px;flex-wrap:wrap}
+.k-direct{font-size:16px;color:#e9dff0;border-bottom:1px solid #ffffff44;padding-bottom:4px}
+@media(max-width:1050px){.k-hero-grid,.k-split{grid-template-columns:1fr;gap:36px}.k-models{grid-template-columns:1fr 1fr}.k-specs{grid-template-columns:1fr 1fr;row-gap:30px}.k-specs>div:nth-child(3){padding-left:0;border-left:0}.k-steps{grid-template-columns:repeat(3,1fr);row-gap:30px}.k-steps:before{display:none}.k-infra,.k-projects{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.k-hero{padding:120px 0 60px}.k-sec{padding:70px 0}.k-models,.k-turfs,.k-infra,.k-projects,.k-why{grid-template-columns:1fr}.k-why li:nth-child(even){padding-left:0;border-left:0}.k-specs{grid-template-columns:1fr}.k-specs>div,.k-specs>div+div{padding:22px 0;border-left:0;border-bottom:1px solid var(--line)}.k-steps{grid-template-columns:1fr}.k-steps li{padding:0 0 0 30px}.k-steps li:before{top:3px}}

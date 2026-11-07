@@ -176,8 +176,11 @@ window.mountCourt3d = (function () {
         mesh(len, 3, x, 1.5, zc, Math.PI / 2);
         rail(len, x, 3, zc, Math.PI / 2, s * .8); rail(2, x, Math.max(H, 3), dir * (hl - 1), Math.PI / 2, s * .8); rail(2, x, 3, dir * (hl - 3), Math.PI / 2, s * .8);
         if (heavy) { rail(len, x, 1, zc, Math.PI / 2, s * .55); rail(len, x, 2, zc, Math.PI / 2, s * .55); }
-        // entrance: frame posts either side of the 1 m opening by the net
-        post(x, dir * .5, 2.4, s); post(x, dir * 1.6, 3, s); rail(1.1, x, 2.4, dir * 1.05, Math.PI / 2, s * .7);
+        // by the net: a mesh panel across the net line, then a 1 m entrance on each side of it with a lintel and mesh above
+        if (dir === 1) { mesh(1.1, 3, x, 1.5, 0, Math.PI / 2); rail(1.1, x, 3, 0, Math.PI / 2, s * .8); }
+        post(x, dir * .55, 3, s); post(x, dir * 1.6, 3, s);
+        rail(1.05, x, 2.1, dir * 1.075, Math.PI / 2, s * .7); rail(1.05, x, 3, dir * 1.075, Math.PI / 2, s * .8);
+        mesh(1.05, .9, x, 2.55, dir * 1.075, Math.PI / 2);
         for (let k = 0; k < Math.round(len / 2); k++) post(x, z1 - dir * k * 2, 3, s);
         post(x, dir * (hl - 4), 3, s); if (heavy) post(x, dir * (hl - 2), H, s);
         if (heavy) { const br = box3(s * .6, 2.6, s * .6, x, 1.6, dir * (hl - 5), M.steel, true); br.rotation.x = dir * .7; }
