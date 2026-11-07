@@ -1,7 +1,7 @@
 const $ = (s, root=document) => root.querySelector(s);
 const $$ = (s, root=document) => [...root.querySelectorAll(s)];
 const arrow = '';
-const cta = (label='Załóż konto klubu') => `<button class="button" data-onboard>${label}</button>`;
+const cta = (label='Zacznij z NeoPadel') => `<button class="button" data-onboard>${label}</button>`;
 const link = (label, route) => `<a class="text-link" href="#/${route}">${label}${arrow}</a>`;
 const detail = (title, text, open=false) => `<details ${open?'open':''}><summary>${title}</summary><div>${text}</div></details>`;
 const pageHero = (label, title, text, action='') => `<section class="page-hero"><div class="wrap"><a class="back" href="#/">Strona główna</a><span class="eyebrow">${label}</span><h1>${title}</h1><p>${text}</p>${action}</div></section>`;
@@ -39,7 +39,7 @@ ${phone(`<div class="app-top"><small>NEOPADEL</small><b>Społeczność</b></div>
 <div class="scr scr-lock"><div class="lock-time">18:42</div><div class="lock-date">sobota, 8 listopada</div><div class="notif" style="--d:0s"><small>NEOPADEL · TERAZ</small><b>Turniej Padel Park</b><span>Sobota, 10:00 · zostały 4 miejsca</span></div><div class="notif" style="--d:.35s"><small>NEOPADEL · TERAZ</small><b>Zwolniło się miejsce</b><span>Turniej Padel Park · zapisz się, zanim zniknie</span></div></div>
 <div class="scr scr-join"><div class="event-card"><small>TURNIEJ · SOBOTA 10:00</small><b>Turniej Padel Park</b><div class="seats"><span class="seat-count" data-count>14</span><span>/16 miejsc</span></div><div class="seat-bar"><i></i></div><span class="app-btn">Dołączam</span><span class="full-badge">Komplet!</span></div></div>`,'flow-phone')}
 </div>`;
-const home = () => `<section class="hero" aria-labelledby="hero-title"><div class="hero-content"><img class="hero-logo" src="assets/logo.png" alt="NeoPadel" width="933" height="183" fetchpriority="high"><h1 id="hero-title">Twój klub. Twój system.</h1>${cta()}<p class="hero-note">Aplikacja dla klubu. Kort dla inwestora. Albo jedno i drugie.</p></div><div class="hero-split"><a class="glass-card" href="#spolecznosc"><img src="${asset('film/app-start.jpg')}" alt="" width="420" height="855"><span><small>Aplikacja dla klubu</small><b>Społeczność, rezerwacje i płatności w jednym systemie</b></span></a><a class="glass-card" href="#/korty"><img src="${asset('korty/hala.jpg')}" alt="" width="1500" height="844"><span><small>Korty dla inwestora</small><b>Projekt, produkcja i montaż kortów w całej Polsce</b></span></a></div></section>
+const home = () => `<section class="hero" aria-labelledby="hero-title"><div class="hero-content"><img class="hero-logo" src="assets/logo.png" alt="NeoPadel" width="933" height="183" fetchpriority="high"><h1 id="hero-title">Twój klub. Twój system.</h1>${cta('Zacznij z NeoPadel').replace('class="button"','class="button glow-btn"')}<p class="hero-note">Aplikacja dla klubu. Kort dla inwestora. Albo jedno i drugie.</p></div></section>
 
 <section class="manifest dark-section" id="ludzie">${loop('piatka','manifest-video')}<div class="manifest-shade"></div><div class="wrap manifest-inner">
 <span class="eyebrow">Klub to ludzie</span>
@@ -133,6 +133,7 @@ function enhance(){
  $$('[data-loop]').forEach(v=>videos.observe(v));observers.push(videos);
  $$('[data-network]').forEach(c=>network(c,still));
  mountConfigurator();
+ motion(still);
  const tabs=$('.shot-tabs');
  if(tabs&&!still){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)startShots();else pauseShots();}),{threshold:.35});io.observe($('#shot-panel'));observers.push(io);}
  const timer=$('[data-timer]');
@@ -170,6 +171,19 @@ function mountConfigurator(){
  const pick=(attr,fn)=>$$(`[${attr}]`).forEach(b=>b.addEventListener('click',()=>{$$(`[${attr}]`).forEach(x=>x.setAttribute('aria-checked',String(x===b)));court3d&&court3d[fn](b.getAttribute(attr));}));
  pick('data-court','setModel');pick('data-turf','setTurf');
 }
+// Linear-style details: cursor-following edge glow on cards, gentle 3D tilt with a moving sheen on screens.
+let motionBound=false;
+function motion(still){
+ $$('.tile,.k-model,.k-turf,.config-panel,.k-auto,.chat,.call-card,.week-card,.need').forEach(el=>el.classList.add('glow'));
+ if(!still)$$('.mini-shot,.k-hero-photo').forEach(el=>{el.setAttribute('data-tilt','');if(!el.querySelector('.sheen')){const sh=document.createElement('i');sh.className='sheen';el.appendChild(sh);}});
+ if(motionBound)return;motionBound=true;
+ document.addEventListener('pointermove',e=>{
+  const g=e.target.closest&&e.target.closest('.glow');if(g){const r=g.getBoundingClientRect();g.style.setProperty('--mx',`${e.clientX-r.left}px`);g.style.setProperty('--my',`${e.clientY-r.top}px`);}
+  const t=e.target.closest&&e.target.closest('[data-tilt]');
+  $$('[data-tilt].tilting').forEach(x=>{if(x!==t){x.classList.remove('tilting');x.style.removeProperty('--rx');x.style.removeProperty('--ry');}});
+  if(t){const r=t.getBoundingClientRect(),px=(e.clientX-r.left)/r.width-.5,py=(e.clientY-r.top)/r.height-.5;t.classList.add('tilting');t.style.setProperty('--rx',`${(-py*7).toFixed(2)}deg`);t.style.setProperty('--ry',`${(px*9).toFixed(2)}deg`);t.style.setProperty('--sx',`${(px+.5)*100}%`);}
+ },{passive:true});
+}
 let countTimer=null;
 function setStep(stage,n){
  if(stage.dataset.step===String(n))return;
@@ -181,8 +195,13 @@ function setStep(stage,n){
 function closeMenu(){$('#nav-links').classList.remove('open');$('#menu-toggle').setAttribute('aria-expanded','false');$$('.nav-more').forEach(x=>x.open=false)}
 $('#menu-toggle').addEventListener('click',()=>{const open=$('#nav-links').classList.toggle('open');$('#menu-toggle').setAttribute('aria-expanded',String(open));});
 const dialog=$('#onboarding');let trigger=null;
-function openDialog(content){$('#dialog-content').innerHTML=content;if(!dialog.open)dialog.showModal();$('#dialog-title')?.focus();}
-function onboard(){openDialog(`<span class="eyebrow">Podgląd onboardingu</span><h2 id="dialog-title" tabindex="-1">Na jakim etapie jest Twój klub?</h2><p>Zacznij od ścieżki dopasowanej do Twojej sytuacji.</p><div class="choices"><button class="choice" data-stage="dziala">Prowadzę klub <span>Chcę zarządzać rezerwacjami i codzienną pracą.</span></button><button class="choice" data-stage="planuje">Planuję otwarcie <span>Buduję klub lub przygotowuję go do startu.</span></button></div><p class="note">Prototyp: ten widok nie zakłada konta i nie wysyła danych.</p>`)}
+function openDialog(content){$('#dialog-content').innerHTML=content;$('#dialog-content').classList.remove('step-in');void $('#dialog-content').offsetWidth;$('#dialog-content').classList.add('step-in');$('#onboarding').classList.toggle('wide',content.includes('need-grid'));if(!dialog.open)dialog.showModal();$('#dialog-title')?.focus();}
+function onboard(){openDialog(`<span class="eyebrow">Zacznij z NeoPadel</span><h2 id="dialog-title" tabindex="-1">Czego potrzebujesz?</h2><p>Wybierz, od czego zaczynamy. Zawsze możesz wrócić i zmienić wybór.</p><div class="need-grid"><button class="need" data-need="system" style="--i:0"><img src="${asset('film/app-start.jpg')}" alt=""><b>System dla klubu</b><span>Społeczność, rezerwacje i płatności w jednym miejscu.</span></button><button class="need" data-need="korty" style="--i:1"><img src="${asset('korty/panorama.jpg')}" alt="" class="light-img"><b>Budowa kortów</b><span>Projekt, produkcja i montaż kortów w całej Polsce.</span></button><button class="need" data-need="oba" style="--i:2"><span class="need-duo"><img src="${asset('film/app-start.jpg')}" alt=""><img src="${asset('korty/super.jpg')}" alt="" class="light-img"></span><b>Jedno i drugie</b><span>Nowy klub od zera: korty i system od pierwszego dnia.</span></button></div><p class="note">Prototyp: ten widok nie zakłada konta i nie wysyła danych.</p>`,true)}
+function needPath(n){
+ if(n==='system')return openDialog(`<span class="eyebrow">System dla klubu</span><h2 id="dialog-title" tabindex="-1">Na jakim etapie jest Twój klub?</h2><p>Zacznij od ścieżki dopasowanej do Twojej sytuacji.</p><div class="choices"><button class="choice" data-stage="dziala">Prowadzę klub <span>Chcę zarządzać rezerwacjami i budować społeczność graczy.</span></button><button class="choice" data-stage="planuje">Planuję otwarcie <span>Buduję klub lub przygotowuję go do startu.</span></button></div><button class="dialog-back" data-reset>Zmień wybór</button>`);
+ if(n==='korty')return openDialog(`<span class="eyebrow">Budowa kortów</span><h2 id="dialog-title" tabindex="-1">Gdzie ma stanąć kort?</h2><p>Model, nawierzchnię i oświetlenie dobieramy do miejsca. Obejrzyj modele w konfiguratorze albo od razu umów konsultację.</p><div class="dialog-actions"><a class="button" href="#/korty" data-close>Otwórz konfigurator</a><a class="button ghost-btn" href="#/kontakt" data-close>Umów konsultację</a></div><button class="dialog-back" data-reset>Zmień wybór</button>`);
+ return openDialog(`<span class="eyebrow">Jedno i drugie</span><h2 id="dialog-title" tabindex="-1">Klub od zera, z jednym partnerem.</h2><ol class="steps"><li>Konsultacja: lokalizacja, skala i plan obiektu.</li><li>Korty, nawierzchnia, oświetlenie i hala.</li><li>System rezerwacji, płatności i społeczność od dnia otwarcia.</li></ol><div class="dialog-actions"><a class="button" href="#/kontakt" data-close>Porozmawiaj z NeoPadel</a><a class="button ghost-btn" href="#/korty" data-close>Zobacz korty</a></div><button class="dialog-back" data-reset>Zmień wybór</button>`);
+}
 function showStage(stage){openDialog(`<span class="eyebrow">Podgląd · ${stage==='dziala'?'Istniejący klub':'Planowany klub'}</span><h2 id="dialog-title" tabindex="-1">${stage==='dziala'?'Przenieś klub do NeoPadel.':'Przygotuj klub do otwarcia.'}</h2><p>Proponowana ścieżka wdrożenia:</p><ol class="steps"><li>Konto właściciela i potwierdzenie adresu e-mail.</li><li>Dane klubu, lokalizacja i korty.</li><li>Konfiguracja panelu przed uruchomieniem rezerwacji.</li></ol><a class="button" href="#/kontakt" data-close>Porozmawiaj z NeoPadel ${arrow}</a><br><button class="dialog-back" data-reset>Zmień etap</button><p class="note">To projekt ścieżki onboardingu. Rejestracja wymaga osobnego wdrożenia i podłączenia do API.</p>`)}
 function login(){openDialog(`<span class="eyebrow">Panel klubu</span><h2 id="dialog-title" tabindex="-1">Wróć do swojego klubu.</h2><p>Otwórz adres panelu otrzymany podczas wdrożenia Twojego klubu. Jeśli go nie masz, skontaktuj się z zespołem NeoPadel.</p><a class="button" href="mailto:office@neopadel.eu">Uzyskaj pomoc ${arrow}</a><p class="note">Podgląd landingu — logowanie do panelu nie jest tutaj podłączone.</p>`)}
 function selectTab(button,auto=false){$$('[data-tab]').forEach(b=>{b.setAttribute('aria-selected',String(b===button));b.tabIndex=b===button?0:-1;});$$('[data-pane]').forEach(p=>p.classList.toggle('on',p.dataset.pane===button.dataset.tab));if(!auto)stopShots();}
@@ -190,6 +209,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('button,a');if(!b
  if(b.hasAttribute('data-onboard')){trigger=b;onboard();}
  if(b.hasAttribute('data-login')){trigger=b;login();}
  if(b.hasAttribute('data-stage'))showStage(b.dataset.stage);
+ if(b.hasAttribute('data-need'))needPath(b.dataset.need);
  if(b.hasAttribute('data-reset'))onboard();
  if(b.hasAttribute('data-close'))dialog.close();
  if(b.hasAttribute('data-tab'))selectTab(b);
