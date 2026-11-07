@@ -41,6 +41,7 @@ for name,mime in [('logo.png','image/png'),('hero-background.jpg','image/jpeg'),
 film={'film/'+p.name:'data:'+mimes[p.suffix]+';base64,'+base64.b64encode(p.read_bytes()).decode() for p in sorted((root/'assets'/'film').iterdir()) if p.suffix in mimes}
 # Real panel screens (read-only local preview, sample data), shown small in the Panel klubu section.
 film.update({'panel/'+p.name:'data:'+mimes[p.suffix]+';base64,'+base64.b64encode(p.read_bytes()).decode() for p in sorted((root/'assets'/'panel').iterdir()) if p.name.startswith('ekran-')})
+film.update({'zespol/'+p.name:'data:'+mimes[p.suffix]+';base64,'+base64.b64encode(p.read_bytes()).decode() for p in sorted((root/'assets'/'zespol').iterdir()) if p.suffix in mimes})
 film.update({'korty/'+p.name:'data:'+mimes[p.suffix]+';base64,'+base64.b64encode(p.read_bytes()).decode() for p in sorted((root/'assets'/'korty').iterdir()) if p.suffix in mimes})
 html=html.replace('<script>'+data,'<script>'+data+'\nconst ASSETS = '+json.dumps(film)+';',1)
 (root/'index.html').write_text(html)
