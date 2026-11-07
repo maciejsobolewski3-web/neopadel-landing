@@ -1231,3 +1231,11 @@ h2.kinetic.accent em{background-image:linear-gradient(95deg,#f2a6f5 0%,#d36fe0 2
 }
 @media(max-width:760px){.ob-steps,.ob-steps li{position:relative}.ob-steps li{position:static}.ob-steps button{position:static}.obs-mini.wide{grid-template-columns:72px 1fr auto;margin:10px}.obs-mini.wide .obs-mini-c{height:52px}}
 .obs-cl{position:relative;z-index:1}
+/* real panel recordings inside the onboarding scenes */
+.obs-vid{width:min(100%,620px)}
+.obs-vid video{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:#0c0c11}
+.ob-steps button.run .ob-prog i{animation-duration:var(--dur,3.6s)}
+@media(min-width:1051px){.ob-scene>.obs-vid{scale:1}}
+/* new week screenshot: bookings sit in the Sunday column */
+.ts-shot .browser-view img{transform-origin:100% 96%}
+.ts-hit{left:75.9%;top:42.6%;width:16.1%;height:9.6%}
