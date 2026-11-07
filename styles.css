@@ -903,3 +903,46 @@ html.menu-open .header .brand{opacity:1;transform:none;pointer-events:auto}
 /* hero visuals keep their glow past the section edge instead of being cut flat */
 .k-hero{overflow:visible;z-index:1}
 .hero:after{content:'';position:absolute;left:0;right:0;bottom:0;height:200px;z-index:-1;pointer-events:none;background:linear-gradient(#0c0c1100,var(--ink))}
+/* ===== Two sides: player app and club panel as one connected pair ===== */
+.ts{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.ts-card{position:relative;overflow:hidden;border-radius:24px;border:1px solid #ffffff17;background:linear-gradient(180deg,#1a1521,#120f17 70%);display:flex;flex-direction:column;isolation:isolate}
+.ts-card:before{content:'';position:absolute;z-index:-1;left:50%;bottom:-120px;width:520px;height:360px;translate:-50% 0;border-radius:50%;background:radial-gradient(closest-side,#ac27b455,transparent);filter:blur(10px)}
+.ts-club:before{background:radial-gradient(closest-side,#6f3fe055,transparent)}
+.ts-top{padding:34px 36px 0}
+.ts-chip{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.04em;color:#e6c3ea;padding:6px 12px 6px 10px;border-radius:999px;background:#ffffff0a;border:1px solid #ffffff1a}
+.ts-chip i{width:7px;height:7px;border-radius:50%;background:#d277d9;box-shadow:0 0 10px #d277d9}
+.ts-club .ts-chip i{background:#8b6cf0;box-shadow:0 0 10px #8b6cf0}
+.ts-top h3{font-size:clamp(26px,2.4vw,36px);line-height:1.1;margin:20px 0 22px;letter-spacing:-.035em}
+.ts-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.ts-list li{display:flex;align-items:center;gap:10px;font-size:14px;color:#cfc8d6}
+.ts-list li:before{content:'';flex:none;width:18px;height:18px;border-radius:50%;background:#ac27b42b url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f0b3f4' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/11px no-repeat}
+.ts-club .ts-list li:before{background-color:#6f3fe02e}
+.ts-stage{position:relative;height:340px;margin-top:36px;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+.ts-phones .phone{position:absolute;top:0;width:190px;border-width:7px;border-radius:32px;box-shadow:0 30px 70px #000b,0 0 0 1px #ffffff14}
+.ts-phones .phone-screen{border-radius:25px}
+.ts-phones .phone:first-child{left:calc(50% - 200px);top:34px}
+.ts-phones .phone:last-child{left:calc(50% + 10px)}
+.ts-shot{padding-left:36px}
+.ts-shot .browser{width:118%;border-radius:14px 0 0 0;border-right:0;box-shadow:0 30px 80px #000b}
+.ts-link{position:absolute;left:50%;top:calc(100% - 250px);translate:-50% -50%;z-index:3;display:flex;align-items:center;justify-content:center;width:260px;pointer-events:none}
+.ts-line{position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,transparent,#d277d9 25%,#8b6cf0 75%,transparent)}
+.ts-line:after{content:'';position:absolute;top:-3px;left:0;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 12px #fff,0 0 24px #d277d9;animation:tsrun 2.6s cubic-bezier(.6,0,.4,1) infinite}
+@keyframes tsrun{0%{left:8%;opacity:0}15%{opacity:1}85%{opacity:1}100%{left:90%;opacity:0}}
+.ts-booking{position:relative;display:grid;gap:2px;text-align:center;padding:12px 18px;border-radius:14px;background:#1d1825f2;border:1px solid #ffffff26;box-shadow:0 20px 50px #000c,0 0 0 4px #0c0c11;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.ts-booking b{font-size:15px;font-weight:600}.ts-booking small{font-size:11px;color:#a79db2}
+.ts-booking:before{content:'';position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(90deg,#d277d9,#8b6cf0);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.8}
+@media(max-width:1050px){.ts-top{padding:28px 26px 0}.ts-list{grid-template-columns:1fr}.ts-shot{padding-left:26px}.ts-phones .phone{width:160px}.ts-phones .phone:first-child{left:calc(50% - 170px)}}
+@media(max-width:760px){.ts{grid-template-columns:1fr;gap:0}.ts-card{border-radius:22px}.ts-list{grid-template-columns:1fr 1fr;gap:9px 12px}.ts-list li{font-size:13px}.ts-stage{height:280px;margin-top:28px}.ts-phones .phone{width:150px}.ts-phones .phone:first-child{left:calc(50% - 158px);top:28px}.ts-phones .phone:last-child{left:calc(50% + 8px)}
+ .ts-link{position:relative;left:auto;top:auto;translate:none;width:auto;height:96px;margin:0 auto}.ts-line{left:50%;right:auto;top:0;bottom:0;width:1px;height:auto;background:linear-gradient(transparent,#d277d9 25%,#8b6cf0 75%,transparent)}.ts-line:after{left:-3px;top:0;animation:tsdown 2.6s cubic-bezier(.6,0,.4,1) infinite}}
+@keyframes tsdown{0%{top:5%;opacity:0}15%{opacity:1}85%{opacity:1}100%{top:90%;opacity:0}}
+@media(prefers-reduced-motion:reduce){.ts-line:after{animation:none;display:none}}
+/* panel crop zoomed on the weekend columns, where the bookings are */
+.ts-shot .browser{width:auto}
+.ts-shot .browser-view{overflow:hidden}
+.ts-shot .browser-view img{transform:scale(1.75);transform-origin:97% 96%}
+/* the Saturday 08:00 Panorama 01 booking in the screenshot, the same one the player just made */
+.ts-hit{position:absolute;left:61.3%;top:43.6%;width:16.2%;height:9.6%;border-radius:6px;box-shadow:0 0 0 2px #f0b3f4,0 0 24px #d277d9aa;animation:tshit 2.6s ease-in-out infinite}
+@keyframes tshit{0%,40%{opacity:0;transform:scale(1.08)}60%,90%{opacity:1;transform:none}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.ts-hit{animation:none}}
+@media(max-width:760px){.ts-club .ts-stage{height:auto}}
+@media(min-width:761px){.ts-link{top:calc(100% - 150px)}}
