@@ -303,3 +303,37 @@ html,body{overflow-x:clip}
 .community .real-note{margin-top:22px}
 @media(max-width:1050px){.bento{grid-template-columns:1fr 1fr}.tile-feed{grid-row:span 1;grid-column:1/-1}.ui-feed{grid-template-columns:1fr 1fr;align-items:start}}
 @media(max-width:760px){.community{padding:90px 0 70px}.bento{grid-template-columns:1fr}.tile{min-height:0}.ui-feed{grid-template-columns:1fr;max-height:330px}}
+/* Korty NeoPadel: konfigurator 3D (model Olka, wypieczone światło i tekstury) */
+.courts{padding:130px 0 110px}
+.courts-head{display:grid;grid-template-columns:1.2fr 1fr;gap:60px;align-items:end;margin-bottom:56px}
+.courts-head .kinetic-big{font-size:clamp(40px,5.4vw,84px)}
+.courts-lead{font-size:clamp(16px,1.3vw,19px);color:#cbc4d2;line-height:1.65}
+.courts .real-note{margin-top:16px}
+.configurator{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(300px,1fr);gap:16px}
+.court3d{position:relative;min-height:620px;border-radius:22px;overflow:hidden;background:#0d0b12;border:1px solid #ffffff17;isolation:isolate}
+.court3d canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y}
+.court3d.dragging canvas{cursor:grabbing}
+.court3d:after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,#0c0c11cc)}
+.c3d-fallback{display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.court3d.nogl canvas,.court3d.nogl .c3d-hint{display:none}.court3d.nogl .c3d-fallback{display:block}
+.c3d-hint,.c3d-dim{position:absolute;z-index:2;font-size:11px;letter-spacing:.08em;color:#cfc6d8;background:#0c0c11b3;border:1px solid #ffffff1a;padding:8px 11px;border-radius:999px;backdrop-filter:blur(6px)}
+.c3d-hint{left:16px;top:16px}.c3d-dim{left:16px;bottom:16px;right:auto;max-width:calc(100% - 32px)}
+.config-panel{padding:24px;border-radius:22px;background:linear-gradient(180deg,#1a1521,#141019);border:1px solid #ffffff17;display:flex;flex-direction:column}
+.config-panel>small{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#a79db2;margin-bottom:12px}
+.config-models{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.config-models button{display:grid;gap:3px;text-align:left;padding:8px 8px 11px;border-radius:14px;background:#ffffff08;border:1px solid #ffffff17;transition:border-color .2s,background .2s}
+.config-models button:hover{border-color:#c467cb88}
+.config-models button[aria-checked=true]{border-color:#d277d9;background:#ac27b41f;box-shadow:0 0 0 1px #d277d9 inset}
+.config-models img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:9px;background:#fff;margin-bottom:6px}
+.config-models b{font-size:14px;font-weight:600;padding:0 3px}
+.config-models span{font-size:11px;line-height:1.35;color:#a9a1b2;padding:0 3px}
+.config-turf{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:26px}
+.config-turf button{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#ffffff08;border:1px solid #ffffff17;font-size:13px;color:#e8e1ee}
+.config-turf i{width:18px;height:18px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px #ffffff22}
+.config-turf button[aria-checked=true]{border-color:#d277d9;background:#ac27b41f}
+.config-panel .button{margin-top:auto;width:100%}
+.config-note{font-size:12px;color:#9a92a4;text-align:center;margin-top:12px}
+.courts-links{margin-top:10px}
+.courts-links .text-link{color:#e9e2ee}
+@media(max-width:1050px){.configurator{grid-template-columns:1fr}.court3d{min-height:480px}.config-models{grid-template-columns:repeat(4,1fr)}.courts-head{grid-template-columns:1fr;gap:24px}}
+@media(max-width:760px){.courts{padding:90px 0 70px}.court3d{min-height:360px;border-radius:16px}.config-models{grid-template-columns:1fr 1fr}.config-panel{padding:18px}.c3d-dim{font-size:10px}}

@@ -29,7 +29,9 @@ data='\n'.join('const '+k+' = '+json.dumps(v,ensure_ascii=False).replace('</','<
 css=(root/'styles.css').read_text()
 js=(root/'app.js').read_text()
 shell=(root/'shell.html').read_text()
-html=shell.replace('/* STYLES */',css).replace('/* DATA */',data).replace('/* APP */',js)
+# three.js r128 (from Olek's concept) and the court configurator are inlined like the rest.
+three=(root/'vendor'/'three.min.js').read_text(); court3d=(root/'court3d.js').read_text()
+html=shell.replace('/* STYLES */',css).replace('/* THREE */',three).replace('/* COURT3D */',court3d).replace('/* DATA */',data).replace('/* APP */',js)
 # A single portable file. The images are embedded so it works from file:// offline.
 mimes={'.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.mp4':'video/mp4'}
 for name,mime in [('logo.png','image/png'),('hero-background.jpg','image/jpeg'),('courts.webp','image/webp')]:
@@ -39,6 +41,7 @@ for name,mime in [('logo.png','image/png'),('hero-background.jpg','image/jpeg'),
 film={'film/'+p.name:'data:'+mimes[p.suffix]+';base64,'+base64.b64encode(p.read_bytes()).decode() for p in sorted((root/'assets'/'film').iterdir()) if p.suffix in mimes}
 # Real panel screens (read-only local preview, sample data), shown small in the Panel klubu section.
 film.update({'panel/'+p.name:'data:'+mimes[p.suffix]+';base64,'+base64.b64encode(p.read_bytes()).decode() for p in sorted((root/'assets'/'panel').iterdir()) if p.name.startswith('ekran-')})
+film.update({'korty/'+p.name:'data:'+mimes[p.suffix]+';base64,'+base64.b64encode(p.read_bytes()).decode() for p in sorted((root/'assets'/'korty').iterdir()) if p.suffix in mimes})
 html=html.replace('<script>'+data,'<script>'+data+'\nconst ASSETS = '+json.dumps(film)+';',1)
 (root/'index.html').write_text(html)
 print(f'Built {root / "index.html"}: {len(html):,} characters; {len(articles)} full articles, {len(projects)} projects, {len(opinions)} source testimonials, {len(film)} film assets.')
