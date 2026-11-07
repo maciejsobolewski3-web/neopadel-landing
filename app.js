@@ -176,8 +176,101 @@ const article = i => {const a=ARTICLES[i];if(!a)return notFound();return `${page
 const solutions = () => `${pageHero('Rozwój klubu','Rozbuduj możliwości<br>swojego obiektu.','Wybierz rozwiązania dopasowane do etapu, na którym jest Twój klub.')}<section class="page-content light"><div class="wrap link-rows">${row('Korty autonomiczne','Dostęp, oświetlenie i obsługa czasu gry.','autonomia')}${row('Sprzęt i sklep partnerski','Oferta dla graczy. Logistyka po stronie NeoPadel.','sklep')}${row('Budowa i rozbudowa','Nowe korty, nawierzchnie, hale oraz zaplecze.','budowa')}</div></section>`;
 const contact = () => `${pageHero('Kontakt','Porozmawiajmy o padlu.','Planujesz inwestycję, rozwijasz klub, interesują Cię rozwiązania NeoPadel lub potrzebujesz wsparcia? Napisz albo zadzwoń.')}<section class="dark-section k-sec c-sec"><div class="wrap"><div class="c-grid" data-reveal>${[['Kontakt ogólny','office@neopadel.eu','mailto:office@neopadel.eu'],['Sprzedaż i współpraca','sales@neopadel.eu','mailto:sales@neopadel.eu'],['Pomoc techniczna','support@neopadel.eu','mailto:support@neopadel.eu'],['Telefon · pn–pt 8:00–17:00','+48 577 665 652','tel:+48577665652']].map(([t,v,h])=>`<a class="tile" href="${h}"><small class="k-meta">${t}</small><b>${v}</b></a>`).join('')}</div><p class="c-addr">NeoPadel · ul. Kineskopowa 1E, 05-500 Piaseczno</p></div></section><section class="dark-section k-sec"><div class="wrap"><div class="k-head"><span class="eyebrow">Zespół</span>${kin('Poznaj osoby, *z którymi porozmawiasz.*')}<p class="k-lead">Za NeoPadel stoją ludzie łączący doświadczenie biznesowe, sportowe i technologiczne.</p></div>${teamGrid()}</div></section>`;
 const notFound = () => `${pageHero('Nie znaleziono strony','Wróćmy na kort.','Wybierz stronę główną lub interesujący Cię temat z menu.',`<a class="button" href="#/">Strona główna</a>`)}`;
-const routes = {'':home,platforma:appPage,aplikacja:appPage,budowa:courtsPage,korty:courtsPage,autonomia:autonomy,sklep:shop,gracze:players,realizacje:projects,wiedza:knowledge,'o-nas':about,rozwiazania:about,kontakt:contact,opinie:opinions,pobierz:download};
-const routeTitles = {'':'Twój klub. Twój system.',platforma:'Aplikacja',aplikacja:'Aplikacja',budowa:'Korty',korty:'Korty',autonomia:'Korty autonomiczne',sklep:'Sklep partnerski',gracze:'Dla graczy',realizacje:'Realizacje',wiedza:'Poradniki','o-nas':'O nas',rozwiazania:'Rozwiązania',kontakt:'Kontakt',opinie:'Opinie',pobierz:'Pobierz aplikację'};
+// ===== Epic: Onboarding for Clubs (prototype). Sign up → "Twoje konto" → create a club (same fields as the panel's
+// business-info) → status "W weryfikacji" → panel. State lives in this browser only (localStorage), nothing is sent.
+const NP_KEY = 'np-proto-v1';
+// Hardcoded accounts for presenting the flow: one with clubs already in the system, one empty to show onboarding from scratch.
+const DEMO_PASS = 'Padel2026', DEMO_CODE = '123456';
+const DEMO = {
+  'demo@neopadel.eu': { name: 'Marta Nowak', clubs: () => [
+    { status: 'active', name: 'Padel Arena Piaseczno', desc: 'Sześć krytych kortów panoramicznych, strefa relaksu i sklep. Gramy codziennie od 6 do 24.', cover: 'korty/hala.jpg', line1: 'ul. Kineskopowa 1E', postal: '05-500', city: 'Piaseczno', state: 'mazowieckie', country: 'Polska', email: 'arena@neopadel.eu', phone: '+48 577 665 652', nip: '5260250995', rep: true },
+    { status: 'review', name: 'Padel Park Rzeszów', desc: 'Cztery korty panoramiczne pod dachem i dwa letnie korty w plenerze.', cover: 'korty/render-super.jpg', line1: 'ul. Rejtana 12', postal: '35-310', city: 'Rzeszów', state: 'podkarpackie', country: 'Polska', email: 'rzeszow@neopadel.eu', phone: '+48 500 600 700', nip: '5260250995', rep: true }] },
+  'nowy@neopadel.eu': { name: 'Piotr Zieliński', clubs: () => [] },
+};
+const pic = v => v && !v.startsWith('data:') ? asset(v) : v;
+function npLoad() { let d; try { d = JSON.parse(localStorage.getItem(NP_KEY)); } catch (e) { /* storage blocked */ } d = d && d.db ? d : { user: null, db: {} }; d.clubs = d.user ? (d.db[d.user.email] ||= []) : []; return d; }
+let NP = npLoad();
+function npSave() { try { localStorage.setItem(NP_KEY, JSON.stringify({ user: NP.user, db: NP.db })); } catch (e) { /* private mode or full: keep in memory */ } }
+function npSignIn(name, email) { email = (email || 'jan@klub.pl').toLowerCase(); NP.user = { name: name || 'Jan Kowalski', email }; if (!NP.db[email]) NP.db[email] = DEMO[email] ? DEMO[email].clubs() : []; NP.clubs = NP.db[email]; npSave(); syncAccountButton(); trigger = null; }
+function npResetDemo() { const e = NP.user.email; NP.db[e] = DEMO[e].clubs(); NP.clubs = NP.db[e]; npSave(); cw = { i: -1, step: 0, d: {} }; route(); }
+function npSignOut() { NP.user = null; NP.clubs = []; npSave(); syncAccountButton(); location.hash = '#/'; }
+function syncAccountButton() { const b = $('[data-login]'); if (!b) return; if (NP.user) { b.innerHTML = `<span class="nav-avatar">${initials(NP.user.name)}</span>Twoje konto`; b.dataset.account = '1'; } else { b.textContent = 'Zaloguj się'; delete b.dataset.account; } }
+const STATUS = { draft: ['Szkic', 'Dokończ tworzenie klubu'], review: ['W weryfikacji', 'Sprawdzamy dane firmy. Panel już działa.'], active: ['Aktywny', 'Klub widoczny dla graczy w aplikacji.'] };
+const esc = s => escapeHtml(s == null ? '' : s);
+
+function accountPage() {
+  if (!NP.user) return `<section class="acc dark-section"><div class="wrap acc-gate"><img class="auth-mark" src="assets/logo-mark.png" alt="" width="123" height="159"><h1>Twoje konto NeoPadel</h1><p class="k-lead">Zaloguj się albo utwórz konto, żeby za darmo stworzyć swój klub i dostać dostęp do panelu.</p><div class="k-actions"><button class="button glow-btn" data-auth="signup">Utwórz konto</button><button class="text-link as-btn" data-auth="login">Mam konto, loguję się</button></div></div></section>`;
+  const clubs = NP.clubs;
+  const card = (c, i) => { const [label, hint] = STATUS[c.status]; const done = [c.name && c.desc, c.line1 && c.city, c.email && c.phone, c.nip].filter(Boolean).length; return `<article class="club-card">
+<div class="club-cover" style="${c.cover ? `background-image:url(${pic(c.cover)})` : ''}">${c.logo ? `<img src="${pic(c.logo)}" alt="">` : `<span>${esc(initials(c.name || 'Nowy klub').slice(0, 2))}</span>`}</div>
+<div class="club-body"><div class="club-top"><h3>${esc(c.name || 'Nowy klub')}</h3><span class="club-badge s-${c.status}">${label}</span></div><p class="club-addr">${esc([c.line1, c.city].filter(Boolean).join(', ') || 'Adres do uzupełnienia')}</p><p class="club-hint">${hint}</p>
+${c.status === 'draft' ? `<div class="club-progress"><i style="--p:${done / 4}"></i></div>` : `<ol class="club-track">${['Klub utworzony', 'Weryfikacja firmy', 'Klub aktywny'].map((t, k) => `<li class="${k === 0 || c.status === 'active' ? 'ok' : k === 1 ? 'now' : ''}">${t}</li>`).join('')}</ol>`}
+<div class="club-actions">${c.status === 'draft' ? `<a class="button" href="#/nowy-klub" data-edit-club="${i}">Dokończ</a>` : `<button class="button" data-open-panel="${i}">Przejdź do panelu</button><a class="text-link" href="#/nowy-klub" data-edit-club="${i}">Edytuj dane</a>`}</div></div></article>`; };
+  return `<section class="acc dark-section"><div class="wrap"><div class="acc-head"><div><span class="eyebrow">Twoje konto</span><h1>Cześć, ${esc(NP.user.name.split(' ')[0])}.</h1><p class="acc-mail">${esc(NP.user.email)} · <button class="as-link" data-signout>Wyloguj</button>${DEMO[NP.user.email] ? ` · <button class="as-link" data-reset-demo>Przywróć dane demo</button>` : ''}</p></div>${clubs.length ? `<a class="button glow-btn" href="#/nowy-klub" data-new-club>Stwórz klub</a>` : ''}</div>
+<div class="acc-grid"><div><h2 class="acc-h2">Twoje kluby</h2>${clubs.length ? `<div class="club-list">${clubs.map(card).join('')}</div>` : `<div class="acc-empty"><div class="acc-empty-vis" aria-hidden="true"><span></span><span></span><span></span></div><h3>Nie masz jeszcze klubu</h3><p>Stworzenie klubu zajmuje kilka minut i jest bezpłatne. Od razu dostajesz dostęp do panelu: korty, cennik, godziny i płatności ustawisz w swoim tempie.</p><a class="button glow-btn" href="#/nowy-klub" data-new-club>Stwórz swój pierwszy klub</a></div>`}</div>
+<aside class="acc-how"><h2 class="acc-h2">Jak to działa</h2><ol class="k-steps acc-steps">${[['Stwórz klub', 'Nazwa, zdjęcia, adres i dane kontaktowe.'], ['Uzupełnij panel', 'Korty, cennik, godziny i płatności, w swoim tempie.'], ['Weryfikacja NeoPadel', 'Sprawdzamy firmę po NIP, zwykle w 1–2 dni robocze.'], ['Klub aktywny', 'Gracze widzą Twój klub i rezerwują w aplikacji.']].map(([t, d], i) => `<li style="--i:${i}"><h3>${t}</h3><p>${d}</p></li>`).join('')}</ol><p class="acc-help">Pytania? <a href="tel:+48577665652">+48 577 665 652</a> · <a href="mailto:office@neopadel.eu">office@neopadel.eu</a></p></aside></div></div></section>`;
+}
+
+// Create-club wizard: four steps plus a summary, live preview of the club as players see it in the app.
+const CW_STEPS = [['klub', 'Klub'], ['adres', 'Adres'], ['kontakt', 'Kontakt'], ['firma', 'Weryfikacja'], ['podsumowanie', 'Podsumowanie']];
+const WOJ = ['dolnośląskie', 'kujawsko-pomorskie', 'lubelskie', 'lubuskie', 'łódzkie', 'małopolskie', 'mazowieckie', 'opolskie', 'podkarpackie', 'podlaskie', 'pomorskie', 'śląskie', 'świętokrzyskie', 'warmińsko-mazurskie', 'wielkopolskie', 'zachodniopomorskie'];
+let cw = { i: -1, step: 0, d: {} };
+const nipValid = n => { const v = (n || '').replace(/\D/g, ''); if (v.length !== 10) return false; const w = [6, 5, 7, 2, 3, 4, 5, 6, 7]; return w.reduce((s, x, i) => s + x * +v[i], 0) % 11 === +v[9]; };
+const field = (k, label, opts = {}) => `<label class="cw-field${opts.wide ? ' wide' : ''}"><span>${label}${opts.opt ? ' <em>opcjonalnie</em>' : ''}</span>${opts.area ? `<textarea name="${k}" rows="4" maxlength="${opts.max || 600}" placeholder="${opts.ph || ''}">${esc(cw.d[k])}</textarea>` : opts.select ? `<select name="${k}"><option value="">Wybierz</option>${opts.select.map(o => `<option ${cw.d[k] === o ? 'selected' : ''}>${o}</option>`).join('')}</select>` : `<input name="${k}" value="${esc(cw.d[k])}" placeholder="${opts.ph || ''}" ${opts.type ? `type="${opts.type}"` : ''} ${opts.mode ? `inputmode="${opts.mode}"` : ''} autocomplete="${opts.ac || 'off'}">`}${opts.help ? `<small>${opts.help}</small>` : ''}</label>`;
+const upload = (k, label, help) => `<div class="cw-upload ${k}${cw.d[k] ? ' has' : ''}" data-upload="${k}"><input type="file" accept="image/*" hidden>${cw.d[k] ? `<img src="${pic(cw.d[k])}" alt="">` : ''}<div class="cw-up-txt"><b>${label}</b><span>${help}</span></div><button type="button" class="cw-up-btn">${cw.d[k] ? 'Zmień' : 'Dodaj zdjęcie'}</button></div>`;
+function cwStepBody(s) {
+  if (s === 0) return `<h2>Jak nazywa się Twój klub?</h2><p class="cw-lead">To zobaczą gracze w aplikacji. Wszystko zmienisz później w panelu.</p><div class="cw-grid">${field('name', 'Nazwa klubu', { wide: 1, ph: 'np. Padel Park Rzeszów' })}${field('desc', 'Opis klubu', { wide: 1, area: 1, ph: 'Kilka zdań o klubie: ile kortów, hala czy plener, co Was wyróżnia.' })}</div><div class="cw-uploads">${upload('cover', 'Zdjęcie w tle', 'Najlepiej kort albo hala, poziome')}${upload('logo', 'Logo', 'Kwadratowe, na jasnym lub ciemnym tle')}</div>`;
+  if (s === 1) return `<h2>Gdzie jest klub?</h2><p class="cw-lead">Adres pokażemy graczom i użyjemy na fakturach. Dokładną pinezkę ustawisz w panelu.</p><div class="cw-grid">${field('line1', 'Ulica i numer', { wide: 1, ph: 'ul. Kineskopowa 1E', ac: 'address-line1' })}${field('line2', 'Lokal, piętro, budynek', { opt: 1, ac: 'address-line2' })}${field('postal', 'Kod pocztowy', { ph: '05-500', ac: 'postal-code' })}${field('city', 'Miasto', { ac: 'address-level2' })}${field('state', 'Województwo', { select: WOJ })}${field('country', 'Kraj', { ph: 'Polska' })}</div>`;
+  if (s === 2) return `<h2>Jak gracze mogą się z Wami skontaktować?</h2><p class="cw-lead">Pokażemy te dane na stronie klubu w aplikacji.</p><div class="cw-grid">${field('email', 'E-mail klubu', { type: 'email', ph: 'kontakt@twojklub.pl', ac: 'email' })}${field('phone', 'Telefon', { type: 'tel', ph: '+48 500 000 000', ac: 'tel' })}${field('website', 'Strona www', { opt: 1, wide: 1, ph: 'https://twojklub.pl', ac: 'url' })}</div>`;
+  if (s === 3) return `<h2>Dane do weryfikacji</h2><p class="cw-lead">Klub aktywujemy po sprawdzeniu, że firma istnieje. Panel działa od razu, weryfikacja trwa zwykle 1–2 dni robocze.</p><div class="cw-grid">${field('nip', 'NIP firmy', { wide: 1, mode: 'numeric', ph: '0000000000', help: 'Sprawdzamy poprawność numeru (10 cyfr z cyfrą kontrolną).' })}</div><label class="cw-check"><input type="checkbox" name="rep" ${cw.d.rep ? 'checked' : ''}> <span>Oświadczam, że reprezentuję ten klub i mogę zarządzać jego danymi.</span></label>`;
+  const d = cw.d, row = (t, v, opt) => `<div><dt>${t}</dt><dd>${esc(v) || (opt ? '<span class="cw-none">nie podano</span>' : '<em>brak</em>')}</dd></div>`;
+  return `<h2>Wszystko gotowe?</h2><p class="cw-lead">Po utworzeniu klubu od razu przejdziesz do panelu. My w tym czasie zweryfikujemy dane firmy.</p><dl class="cw-sum">${row('Nazwa', d.name)}${row('Adres', [d.line1, d.line2, [d.postal, d.city].filter(Boolean).join(' '), d.state].filter(Boolean).join(', '))}${row('Kontakt', [d.email, d.phone].filter(Boolean).join(' · '))}${row('Strona', d.website, 1)}${row('NIP', d.nip)}</dl><div class="cw-next"><b>Co dalej w panelu</b><span>Korty</span><span>Cennik i godziny</span><span>Płatności online</span><span>Zespół klubu</span></div>`;
+}
+function cwValid(s) {
+  const d = cw.d, req = { 0: ['name', 'desc'], 1: ['line1', 'postal', 'city', 'state', 'country'], 2: ['email', 'phone'] }[s] || [];
+  if (req.some(k => !(d[k] || '').trim())) return 'Uzupełnij wymagane pola.';
+  if (s === 1 && !/^\d{2}-\d{3}$/.test(d.postal.trim())) return 'Kod pocztowy w formacie 00-000.';
+  if (s === 2 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email.trim())) return 'Podaj poprawny e-mail klubu.';
+  if (s === 2 && d.phone.replace(/\D/g, '').length < 9) return 'Podaj numer telefonu (min. 9 cyfr).';
+  if (s === 3 && !nipValid(d.nip)) return 'NIP jest niepoprawny. Sprawdź 10 cyfr.';
+  if (s === 3 && !d.rep) return 'Potwierdź, że reprezentujesz klub.';
+  return '';
+}
+function clubWizardPage() {
+  if (!NP.user) return accountPage();
+  return `<section class="cw dark-section" data-clubwiz><div class="wrap"><div class="cw-top"><a class="back" href="#/konto">Twoje konto</a><ol class="cw-stepper">${CW_STEPS.map(([k, l], i) => `<li data-cw-go="${i}"><i></i><span>${l}</span></li>`).join('')}</ol></div><div class="cw-grid-main"><form class="cw-form" novalidate><div class="cw-body"></div><p class="auth-err cw-err" role="alert"></p><div class="cw-nav"><button type="button" class="button ghost-btn" data-cw-back>Wstecz</button><button type="submit" class="button glow-btn" data-cw-next>Dalej</button></div><p class="cw-save">Szkic zapisuje się automatycznie.</p></form>
+<aside class="cw-preview" aria-label="Podgląd klubu w aplikacji"><span class="eyebrow">Tak zobaczą Cię gracze</span><div class="phone cw-phone"><div class="phone-screen"><div class="pv-top"><small>NEOPADEL</small><b>Korty w pobliżu</b></div><div class="pv-card"><div class="pv-cover"><span class="pv-new">Nowy klub</span></div><div class="pv-info"><span class="pv-logo"></span><div><b class="pv-name">Twój klub</b><small class="pv-addr">Adres klubu</small></div></div><p class="pv-desc"></p><span class="pv-btn">Zarezerwuj kort</span></div><div class="pv-ghost"></div></div></div></aside></div></div></section>`;
+}
+function initClubWizard() {
+  const root = $('[data-clubwiz]'); if (!root) return;
+  if (cw.i < 0 || !NP.clubs[cw.i]) { const drafts = NP.clubs.map((c, k) => c.status === 'draft' ? k : -1).filter(k => k >= 0); let i = cw.fresh ? NP.clubs.findIndex(c => c.status === 'draft' && !c.name) : drafts.length ? drafts[drafts.length - 1] : -1; if (i < 0) { NP.clubs.push({ status: 'draft', country: 'Polska' }); i = NP.clubs.length - 1; npSave(); } cw = { i, step: NP.clubs[i]._step || 0, d: NP.clubs[i] }; }
+  else cw.d = NP.clubs[cw.i];
+  if (!cw.d.country) cw.d.country = 'Polska';
+  const body = $('.cw-body', root), err = $('.cw-err', root);
+  const preview = () => { const d = cw.d; $('.pv-name', root).textContent = d.name || 'Twój klub'; $('.pv-addr', root).textContent = [d.line1, d.city].filter(Boolean).join(', ') || 'Adres klubu'; $('.pv-desc', root).textContent = d.desc || 'Tu pojawi się opis klubu.'; $('.pv-cover', root).style.backgroundImage = d.cover ? `url(${pic(d.cover)})` : ''; const lg = $('.pv-logo', root); lg.style.backgroundImage = d.logo ? `url(${pic(d.logo)})` : ''; lg.textContent = d.logo ? '' : initials(d.name || 'Klub').slice(0, 2); };
+  const render = () => { if (cw.d.status === 'draft') { cw.d._step = cw.step; npSave(); } body.innerHTML = cwStepBody(cw.step); body.classList.remove('step-in'); void body.offsetWidth; body.classList.add('step-in'); err.textContent = '';
+    $$('.cw-stepper li', root).forEach((li, i) => { li.classList.toggle('on', i === cw.step); li.classList.toggle('done', i < cw.step); });
+    $('[data-cw-back]', root).style.visibility = cw.step ? 'visible' : 'hidden'; $('[data-cw-next]', root).textContent = cw.step === 4 ? 'Utwórz klub' : 'Dalej'; root.classList.toggle('last', cw.step === 4); preview(); const f = $('input,textarea,select', body); f && cw.step < 4 && f.focus({ preventScroll: true }); };
+  body.addEventListener('input', e => { const t = e.target; if (!t.name) return; cw.d[t.name] = t.type === 'checkbox' ? t.checked : t.value; npSave(); preview(); err.textContent = ''; });
+  body.addEventListener('change', e => { const t = e.target; if (t.name) { cw.d[t.name] = t.type === 'checkbox' ? t.checked : t.value; npSave(); } });
+  body.addEventListener('click', e => { const up = e.target.closest('[data-upload]'); if (up) $('input[type=file]', up).click(); });
+  body.addEventListener('change', e => { const t = e.target; if (t.type !== 'file' || !t.files[0]) return; const k = t.closest('[data-upload]').dataset.upload, r = new FileReader();
+    r.onload = () => { const im = new Image(); im.onload = () => { const max = k === 'logo' ? 320 : 1000, sc = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = im.width * sc; c.height = im.height * sc; c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); cw.d[k] = c.toDataURL('image/jpeg', .82); npSave(); render(); }; im.src = r.result; }; r.readAsDataURL(t.files[0]); });
+  $('.cw-form', root).addEventListener('submit', e => { e.preventDefault(); const m = cwValid(cw.step); if (m) { err.textContent = m; return; }
+    if (cw.step < 4) { cw.step++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    cw.d.status = 'review'; cw.d.created = Date.now(); npSave(); clubCreated(cw.i); cw = { i: -1, step: 0, d: {} }; });
+  $('[data-cw-back]', root).addEventListener('click', () => { if (cw.step) { cw.step--; render(); } });
+  $$('[data-cw-go]', root).forEach(li => li.addEventListener('click', () => { const to = +li.dataset.cwGo; if (to < cw.step) { cw.step = to; render(); } }));
+  render();
+}
+function clubCreated(i) {
+  const c = NP.clubs[i];
+  openDialog(`<div class="done-wrap"><div class="done-check" aria-hidden="true"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg></div><span class="eyebrow">Klub utworzony</span><h2 id="dialog-title" tabindex="-1">${esc(c.name)} jest w NeoPadel.</h2><p>Panel klubu jest już dostępny. Dodaj korty, cennik i godziny. Dane firmy weryfikujemy, zwykle w 1–2 dni robocze, a potem klub stanie się widoczny dla graczy.</p><div class="dialog-actions"><button class="button glow-btn" data-open-panel="${i}">Przejdź do panelu</button><a class="button ghost-btn" href="#/konto" data-close>Twoje konto</a></div></div>`);
+  location.hash = '#/konto';
+}
+
+const routes = {'':home,konto:accountPage,'nowy-klub':clubWizardPage,platforma:appPage,aplikacja:appPage,budowa:courtsPage,korty:courtsPage,autonomia:autonomy,sklep:shop,gracze:players,realizacje:projects,wiedza:knowledge,'o-nas':about,rozwiazania:about,kontakt:contact,opinie:opinions,pobierz:download};
+const routeTitles = {'':'Twój klub. Twój system.',konto:'Twoje konto','nowy-klub':'Stwórz klub',platforma:'Aplikacja',aplikacja:'Aplikacja',budowa:'Korty',korty:'Korty',autonomia:'Korty autonomiczne',sklep:'Sklep partnerski',gracze:'Dla graczy',realizacje:'Realizacje',wiedza:'Poradniki','o-nas':'O nas',rozwiazania:'Rozwiązania',kontakt:'Kontakt',opinie:'Opinie',pobierz:'Pobierz aplikację'};
 let firstRender=true;
 function route(){
  if(location.hash && !location.hash.startsWith('#/'))return;
@@ -206,6 +299,8 @@ function enhance(){
  $$('[data-loop]').forEach(v=>videos.observe(v));observers.push(videos);
  $$('[data-network]').forEach(c=>network(c,still));
  mountConfigurator();
+ initClubWizard();
+ syncAccountButton();
  motion(still);
  const tabs=$('.shot-tabs');
  if(tabs&&!still){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)startShots();else pauseShots();}),{threshold:.35});io.observe($('#shot-panel'));observers.push(io);}
@@ -281,31 +376,65 @@ function needPath(n){wiz={need:n,detail:null};const N=NEEDS[n];openDialog(wizHea
 function wizSummary(k){wiz.detail=k;const N=NEEDS[wiz.need],opt=N.opts.find(o=>o[0]===k);
  const subject=`NeoPadel: ${N.label} · ${opt[1]}`, body=`Dzień dobry,\n\ninteresuje mnie: ${N.label}.\n${N.q} ${opt[1]}.\n\nMiejscowość:\nNazwa klubu (jeśli jest):\nTelefon:\n\nPozdrawiam`;
  const mail=`mailto:office@neopadel.eu?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
- openDialog(wizHead(3,'Twoja ścieżka','Tak to będzie wyglądało. Napisz do nas, a odezwiemy się, zwykle tego samego dnia roboczego.','Podsumowanie')+`<div class="wiz-sum"><div class="wiz-chips"><span>${N.label}</span><span>${opt[1]}</span></div><ol class="wiz-next">${N.next.map((t,i)=>`<li style="--i:${i}">${t}</li>`).join('')}</ol></div><div class="dialog-actions"><a class="button glow-btn" href="${mail}">Napisz do NeoPadel</a><a class="button ghost-btn" href="#/${N.page[0]}" data-close>${N.page[1]}</a></div>${wiz.need==='system'?'<p class="wiz-alt">Chcesz od razu założyć konto? <button class="wiz-link" type="button" data-auth="signup">Załóż konto klubu</button></p>':''}<p class="wiz-alt">Wolisz zadzwonić? <a href="tel:+48577665652">+48 577 665 652</a> · pn–pt 8:00–17:00</p>`);}
+ openDialog(wizHead(3,'Twoja ścieżka','Tak to będzie wyglądało. Napisz do nas, a odezwiemy się, zwykle tego samego dnia roboczego.','Podsumowanie')+`<div class="wiz-sum"><div class="wiz-chips"><span>${N.label}</span><span>${opt[1]}</span></div><ol class="wiz-next">${N.next.map((t,i)=>`<li style="--i:${i}">${t}</li>`).join('')}</ol></div><div class="dialog-actions"><a class="button glow-btn" href="${mail}">Napisz do NeoPadel</a><a class="button ghost-btn" href="#/${N.page[0]}" data-close>${N.page[1]}</a></div>${wiz.need==='system'?'<p class="wiz-alt">Chcesz od razu założyć konto? <button class="wiz-link" type="button" data-auth="signup">Utwórz konto</button></p>':''}<p class="wiz-alt">Wolisz zadzwonić? <a href="tel:+48577665652">+48 577 665 652</a> · pn–pt 8:00–17:00</p>`);}
 function showStage(stage){openDialog(`<span class="eyebrow">Podgląd · ${stage==='dziala'?'Istniejący klub':'Planowany klub'}</span><h2 id="dialog-title" tabindex="-1">${stage==='dziala'?'Przenieś klub do NeoPadel.':'Przygotuj klub do otwarcia.'}</h2><p>Proponowana ścieżka wdrożenia:</p><ol class="steps"><li>Konto właściciela i potwierdzenie adresu e-mail.</li><li>Dane klubu, lokalizacja i korty.</li><li>Konfiguracja panelu przed uruchomieniem rezerwacji.</li></ol><a class="button" href="#/kontakt" data-close>Porozmawiaj z NeoPadel ${arrow}</a><br><button class="dialog-back" data-reset>Zmień etap</button><p class="note">To projekt ścieżki onboardingu. Rejestracja wymaga osobnego wdrożenia i podłączenia do API.</p>`)}
-// Linear-style sign-in / sign-up: a calm full-screen sheet, two ways in, a switch between modes. Not connected in the prototype.
+// Sign-in / sign-up mirroring web-app/component/auth/AuthPage.tsx (same fields, rules and consents as the web app and the
+// mobile app; social: Google and Apple). Linear-style full-screen sheet. Not connected in the prototype.
+const G_ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.8 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.5a4.7 4.7 0 0 1-2 3.1v2.6h3.3c1.9-1.8 3-4.4 3-7.5z"/><path fill="#34A853" d="M12 22c2.7 0 5-.9 6.7-2.4l-3.3-2.6c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3v2.6A10 10 0 0 0 12 22z"/><path fill="#FBBC05" d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3a10 10 0 0 0 0 9z"/><path fill="#EA4335" d="M12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3 7.5l3.4 2.6C7.2 7.8 9.4 6 12 6z"/></svg>';
+const A_ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.9-1.1-2.9-4.2zM14 5.3c.7-.8 1.2-2 1.1-3.1-1 0-2.3.7-3 1.5-.6.7-1.2 1.9-1.1 3 1.2.1 2.3-.6 3-1.4z"/></svg>';
+let authEmail='',authName='';
 function auth(mode='login',step='start'){
  const signup=mode==='signup';
- const head=`<img class="auth-mark" src="assets/logo-mark.png" alt="NeoPadel" width="123" height="160"><h2 id="dialog-title" tabindex="-1">${signup?'Załóż konto klubu':'Zaloguj się do NeoPadel'}</h2>`;
- const body=step==='email'
-  ?`<form class="auth-form" data-auth-form><label class="auth-field"><span>Adres e-mail</span><input type="email" required placeholder="klub@twojadomena.pl" autocomplete="email"></label>${signup?'<label class="auth-field"><span>Nazwa klubu</span><input type="text" placeholder="np. Padel Park Rzeszów" autocomplete="organization"></label>':''}<button class="auth-btn primary" type="submit">${signup?'Załóż konto':'Kontynuuj'}</button><button class="auth-btn" type="button" data-auth="${mode}">Wróć</button></form>`
-  :`<div class="auth-btns"><button class="auth-btn primary" type="button" data-auth-google><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M21.8 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.5a4.7 4.7 0 0 1-2 3.1v2.6h3.3c1.9-1.8 3-4.4 3-7.5z"/><path fill="#fff" opacity=".85" d="M12 22c2.7 0 5-.9 6.7-2.4l-3.3-2.6c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3v2.6A10 10 0 0 0 12 22z"/><path fill="#fff" opacity=".7" d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3a10 10 0 0 0 0 9z"/><path fill="#fff" opacity=".55" d="M12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3 7.5l3.4 2.6C7.2 7.8 9.4 6 12 6z"/></svg>Kontynuuj z Google</button><button class="auth-btn" type="button" data-auth="${mode}" data-auth-step="email">Kontynuuj z e-mailem</button></div>`;
- const foot=signup
-  ?`<p class="auth-legal">Zakładając konto, akceptujesz <a href="https://neopadel.eu/pl/tos">Regulamin</a> i <a href="https://neopadel.eu/pl/privacyPolicy">Politykę prywatności</a>.</p><p class="auth-switch">Masz już konto? <button type="button" data-auth="login">Zaloguj się</button></p>`
-  :`<p class="auth-switch">Nie masz konta? <button type="button" data-auth="signup">Załóż konto klubu</button></p>`;
- openDialog(`<div class="auth-wrap">${head}${body}${foot}<p class="auth-note">Prototyp: logowanie nie jest tu podłączone i nic nie jest wysyłane.</p></div>`);
+ const social=`<div class="auth-btns"><button class="auth-btn google" type="button" data-auth-social="Google">${G_ICON}Kontynuuj z Google</button><button class="auth-btn apple" type="button" data-auth-social="Apple">${A_ICON}Kontynuuj z Apple</button></div><div class="auth-or"><span>albo kontynuuj przez</span></div>`;
+ let body;
+ if(step==='verify'){
+  body=`<p class="auth-lead">Wpisz kod weryfikacyjny, aby aktywować konto i zalogować się do rezerwacji.</p><p class="auth-mail">${escapeHtml(authEmail)}</p><form class="auth-form" data-auth-verify novalidate><label class="auth-field"><span>Kod weryfikacyjny</span><input name="code" inputmode="numeric" maxlength="6" pattern="\\d{6}" placeholder="000000" autocomplete="one-time-code" class="auth-code"></label><p class="auth-err" role="alert"></p><button class="auth-btn primary" type="submit">Potwierdź konto</button></form><p class="auth-demo-code">Prototyp: wpisz kod <button type="button" data-code-fill>${DEMO_CODE}</button></p><p class="auth-switch">Kod nie dotarł? <button type="button" data-auth-resend disabled>Wyślij ponownie za <b data-resend-s>30</b> s</button></p><p class="auth-switch"><button type="button" data-auth="signup">Zmień email</button></p>`;
+ } else if(signup){
+  body=social+`<form class="auth-form" data-auth-signup novalidate><label class="auth-field"><span>Imię i nazwisko</span><input name="name" autocomplete="name" required></label><label class="auth-field"><span>Email</span><input name="email" type="email" autocomplete="email" required></label><label class="auth-field"><span>Hasło</span><input name="pass" type="password" minlength="8" autocomplete="new-password" required></label><label class="auth-field"><span>Powtórz hasło</span><input name="pass2" type="password" minlength="8" autocomplete="new-password" required></label>
+<div class="auth-checks"><label><input type="checkbox" name="terms" data-req> <span>Akceptuję <a href="https://neopadel.eu/pl/tos">Regulamin</a></span></label><label><input type="checkbox" name="privacy" data-req> <span>Przeczytałem(-am) <a href="https://neopadel.eu/pl/privacyPolicy">Politykę prywatności</a></span></label><label><input type="checkbox" name="age" data-req> <span>Potwierdzam, że mam co najmniej 16 lat i jestem prawnie uprawniony(-a) do utworzenia konta oraz korzystania z tej strony.</span></label><label><input type="checkbox" name="news"> <span>Chcę otrzymywać newsletter Neopadel z nowościami i ofertami (opcjonalnie)</span></label></div>
+<p class="auth-hint" data-auth-hint>Zaznacz Regulamin, Politykę prywatności i potwierdzenie wieku, aby utworzyć konto.</p><p class="auth-err" role="alert"></p><button class="auth-btn primary" type="submit" disabled data-auth-submit>Utwórz konto</button></form>`;
+ } else {
+  body=social+`<form class="auth-form" data-auth-login novalidate><label class="auth-field"><span>Email lub telefon</span><input name="login" autocomplete="username" required></label><label class="auth-field"><span>Hasło</span><input name="pass" type="password" minlength="6" autocomplete="current-password" required></label><button class="auth-forgot" type="button" data-auth-forgot>Nie pamiętasz hasła?</button><p class="auth-err" role="alert"></p><button class="auth-btn primary" type="submit">Zaloguj</button></form><div class="auth-demo"><b>Konta do prezentacji</b><button type="button" data-demo-fill="demo@neopadel.eu"><span>demo@neopadel.eu</span><small>Klub aktywny i klub w weryfikacji</small></button><button type="button" data-demo-fill="nowy@neopadel.eu"><span>nowy@neopadel.eu</span><small>Puste konto, onboarding od zera</small></button><p>Hasło: <code>${DEMO_PASS}</code> · kod przy rejestracji: <code>${DEMO_CODE}</code></p></div>`;
+ }
+ const title=step==='verify'?'Sprawdź skrzynkę email':signup?'Utwórz konto':'Zaloguj się do NeoPadel';
+ const sub=step==='verify'?'':`<p class="auth-sub">${signup?'Jedno konto NeoPadel: to samo w aplikacji i na stronie.':'Zaloguj się tym samym kontem co w aplikacji NeoPadel.'}</p>`;
+ const foot=step==='verify'?'':signup?`<p class="auth-switch">Masz już konto w aplikacji? <button type="button" data-auth="login">Logowanie</button></p>`:`<p class="auth-switch">Nie masz jeszcze konta? <button type="button" data-auth="signup">Rejestracja</button></p>`;
+ openDialog(`<div class="auth-wrap"><img class="auth-mark" src="assets/logo-mark.png" alt="NeoPadel" width="123" height="159"><h2 id="dialog-title" tabindex="-1">${title}</h2>${sub}${body}${foot}<p class="auth-note">Prototyp: konto i kluby zapisują się tylko w tej przeglądarce. Nic nie jest wysyłane.</p></div>`);
  $('#onboarding').classList.add('auth');
+ if(step==='verify'){let t=30;const btn=$('[data-auth-resend]'),out=$('[data-resend-s]');const iv=setInterval(()=>{if(!document.body.contains(btn))return clearInterval(iv);t--;if(t<=0){clearInterval(iv);btn.disabled=false;btn.textContent='Wyślij ponownie';}else out.textContent=t;},1000);}
 }
+// Same password rule as web-app/utils/passwordRule.ts::isValidNewPassword: 8–128 characters, a letter and a digit.
+const validPassword = p => { const v=p.trim(); return v.length>=8 && v.length<=128 && /\p{L}/u.test(v) && /\d/.test(v); };
+document.addEventListener('change',e=>{const f=e.target.closest('[data-auth-signup]');if(!f)return;const ok=[...f.querySelectorAll('[data-req]')].every(c=>c.checked);f.querySelector('[data-auth-submit]').disabled=!ok;f.querySelector('[data-auth-hint]').hidden=ok;});
+document.addEventListener('submit',e=>{
+ const f=e.target;const err=m=>{const p=f.querySelector('.auth-err');p.textContent=m;};
+ if(f.matches('[data-auth-signup]')){e.preventDefault();const d=Object.fromEntries(new FormData(f));
+  if(!d.name.trim())return err('Podaj imię i nazwisko.');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email.trim()))return err('Podaj poprawny adres email.');
+  if(!validPassword(d.pass))return err('Użyj od 8 do 128 znaków, w tym co najmniej jednej litery i jednej cyfry.');
+  if(d.pass!==d.pass2)return err('Hasła muszą być takie same.');
+  authEmail=d.email.trim();authName=d.name.trim();auth('signup','verify');}
+ if(f.matches('[data-auth-login]')){e.preventDefault();const d=Object.fromEntries(new FormData(f));if(!d.login.trim()||!d.pass)return err('Podaj email lub telefon i hasło.');const em=d.login.trim().toLowerCase(),known=DEMO[em]||NP.db[em];if(!known||(DEMO[em]&&d.pass!==DEMO_PASS))return err('Nieprawidłowy email lub hasło.');npSignIn(DEMO[em]?.name||em.split('@')[0],em);dialog.close();location.hash='#/konto';}
+ if(f.matches('[data-auth-verify]')){e.preventDefault();const c=new FormData(f).get('code');if(!/^\d{6}$/.test(c))return err('Kod ma 6 cyfr.');if(c!==DEMO_CODE)return err('Nieprawidłowy kod. W prototypie kod to 123456.');npSignIn(authName,authEmail);dialog.close();location.hash='#/konto';}
+});
 function login(){auth('login');}
 function selectTab(button,auto=false){$$('[data-tab]').forEach(b=>{b.setAttribute('aria-selected',String(b===button));b.tabIndex=b===button?0:-1;});$$('[data-pane]').forEach(p=>p.classList.toggle('on',p.dataset.pane===button.dataset.tab));if(!auto)stopShots();}
 document.addEventListener('click',e=>{const b=e.target.closest('button,a');if(!b)return;
  if(b.hasAttribute('data-onboard')){trigger=b;onboard();}
- if(b.hasAttribute('data-login')){trigger=b;login();}
+ if(b.hasAttribute('data-login')){trigger=b;if(b.dataset.account){location.hash='#/konto';}else login();}
  if(b.hasAttribute('data-stage'))showStage(b.dataset.stage);
  if(b.hasAttribute('data-need'))needPath(b.dataset.need);
  if(b.hasAttribute('data-detail'))wizSummary(b.dataset.detail);
+ if(b.hasAttribute('data-signout'))npSignOut();
+ if(b.hasAttribute('data-reset-demo'))npResetDemo();
+ if(b.hasAttribute('data-code-fill')){const i=$('[name=code]');i.value=DEMO_CODE;i.focus();}
+ if(b.hasAttribute('data-demo-fill')){const f=$('[data-auth-login]');f.login.value=b.dataset.demoFill;f.pass.value=DEMO_PASS;f.querySelector('[type=submit]').focus();}
+ if(b.hasAttribute('data-new-club'))cw={i:-1,step:0,d:{},fresh:true};
+ if(b.hasAttribute('data-edit-club'))cw={i:+b.dataset.editClub,step:0,d:{}};
+ if(b.hasAttribute('data-open-panel'))openDialog(`<div class="done-wrap"><span class="eyebrow">Panel klubu</span><h2 id="dialog-title" tabindex="-1">Tu otworzy się panel Twojego klubu.</h2><p>W wersji produkcyjnej ten przycisk loguje do panelu NeoPadel z danymi, które właśnie wpisałeś. W prototypie panel nie jest podłączony.</p><div class="dialog-actions"><button class="button" data-close>Rozumiem</button></div></div>`);
  if(b.hasAttribute('data-auth'))auth(b.dataset.auth,b.dataset.authStep||'start');
- if(b.hasAttribute('data-auth-google'))b.textContent='Logowanie Google nie jest podłączone w prototypie';
+ if(b.hasAttribute('data-auth-social')){npSignIn('Marta Nowak','demo@neopadel.eu');dialog.close();location.hash='#/konto';}
+ if(b.hasAttribute('data-auth-forgot'))b.textContent='Prototyp: reset hasła nie jest podłączony';
  if(b.hasAttribute('data-wiz-back')){const st=b.dataset.wizBack;st==='1'?onboard():needPath(wiz.need);}
  if(b.hasAttribute('data-reset'))onboard();
  if(b.hasAttribute('data-close'))dialog.close();
@@ -315,6 +444,5 @@ document.addEventListener('click',e=>{const b=e.target.closest('button,a');if(!b
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();if(e.target.matches('[role=tab]')&&['ArrowRight','ArrowLeft','Home','End'].includes(e.key)){e.preventDefault();const tabs=$$('[role=tab]');const index=tabs.indexOf(e.target);const next=e.key==='Home'?0:e.key==='End'?tabs.length-1:(index+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;selectTab(tabs[next]);tabs[next].focus();}});
 document.addEventListener('click',e=>{if(!e.target.closest('.nav-more'))$$('.nav-more').forEach(x=>x.open=false)});
 dialog.addEventListener('close',()=>{trigger?.focus();});
-document.addEventListener('submit',e=>{if(e.target.matches('[data-auth-form]')){e.preventDefault();const f=e.target;f.innerHTML='<p class="auth-done">To jest prototyp, więc konto nie zostało założone. W wersji produkcyjnej tu przyjdzie link na podany adres.</p>';}});
 dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});
 window.addEventListener('hashchange',route);route();
