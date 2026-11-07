@@ -431,14 +431,34 @@ html,body{overflow-x:clip}
 .need{display:flex;flex-direction:column;gap:8px;text-align:left;padding:12px 12px 18px;border-radius:18px;background:linear-gradient(180deg,#221b2b,#17131d);border:1px solid #ffffff1c;color:#fff;transition:transform .35s cubic-bezier(.16,.84,.24,1),border-color .3s}
 .need:hover{transform:translateY(-4px);border-color:#d277d988}
 .step-in .need{animation:enter .6s cubic-bezier(.16,.84,.24,1) both calc(.08s + var(--i)*.08s)}
-.need img{width:100%;height:140px;object-fit:cover;object-position:top;border-radius:12px;margin-bottom:8px;background:#0c0a10}
-.need img.light-img{background:#fff;object-fit:contain;object-position:center}
-.need-duo{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.need-duo img{height:140px}
 .need b{font-size:18px;font-weight:600;padding:0 4px}
 .need span{font-size:13px;line-height:1.45;color:#b9b0c2;padding:0 4px}
 .dialog-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
 .dialog-actions .button{margin-top:0}
 .ghost-btn{background:transparent;color:#fff;border:1px solid #ffffff38}
 .ghost-btn:hover{background:#ffffff10}
-@media(max-width:760px){.need-grid{grid-template-columns:1fr;gap:10px}.need{display:grid;grid-template-columns:78px 1fr;column-gap:14px;row-gap:3px;align-items:center;padding:10px}.need>img,.need-duo{grid-row:1/3;width:78px;height:78px;margin:0}.need-duo{display:block}.need-duo img{width:78px;height:78px;margin:0}.need-duo img:last-child{display:none}.need b{font-size:16px;align-self:end;padding:0}.need>span:last-child{align-self:start;font-size:12px;padding:0}}
+@media(max-width:760px){.need-grid{grid-template-columns:1fr;gap:10px}.need{display:grid;grid-template-columns:96px 1fr;column-gap:14px;row-gap:3px;align-items:center;padding:10px}.need-vis{grid-row:1/3}.need b{font-size:16px;align-self:end;padding:0}.need>span:last-child{align-self:start;font-size:12px;padding:0}}
+
+/* okno wyboru: większe, z kompozycjami zamiast wyciętych obrazków */
+.dialog.wide{max-width:1280px;width:calc(100% - 48px);padding:56px 56px 40px}
+.dialog.wide h2{font-size:clamp(34px,3.6vw,54px);max-width:none;margin:16px 0 14px}
+.dialog.wide>#dialog-content>p{font-size:17px}
+.dialog h2:focus{outline:none}
+.need-grid{gap:18px;margin-top:36px}
+.need{padding:14px 14px 24px;border-radius:22px;gap:10px}
+.need b{font-size:22px}
+.need span{font-size:14px}
+.need-vis{position:relative;display:block;height:clamp(220px,24vw,320px);border-radius:16px;overflow:hidden;margin-bottom:10px;background:radial-gradient(120% 90% at 50% 0%,#3a1747,#141019 70%);padding:0}
+.need-vis img{position:absolute;display:block;transition:transform .8s cubic-bezier(.16,.84,.24,1)}
+.v-panel{left:7%;top:12%;width:100%;border-radius:10px;box-shadow:0 20px 50px #000a,0 0 0 1px #ffffff1a}
+.v-phone{position:absolute;right:7%;bottom:-22%;width:34%;aspect-ratio:420/855;border-radius:18px;border:4px solid #1e1a26;overflow:hidden;box-shadow:0 24px 50px #000c,0 0 40px #ac27b455;transition:transform .8s cubic-bezier(.16,.84,.24,1)}
+.v-phone img{position:static;width:100%;height:100%;object-fit:cover;object-position:top}
+.v-court{inset:0;width:100%;height:100%;object-fit:cover}
+.need:hover .v-panel{transform:translate(-3%,-3%) scale(1.02)}
+.need:hover .v-phone{transform:translateY(-8%)}
+.need:hover .v-court{transform:scale(1.05)}
+.vis-oba .v-phone{width:26%;right:6%}
+@media(max-width:760px){.dialog.wide{padding:32px 20px 24px;width:calc(100% - 20px)}.need-vis{grid-row:1/3;width:96px;height:96px;margin:0;border-radius:12px}.need b{font-size:16px}.need span{font-size:12px}.v-phone{border-width:2px;border-radius:8px;bottom:-10%}.need{grid-template-columns:96px 1fr}}
+/* większy główny przycisk w hero */
+.hero .button.glow-btn{font-size:22px;min-height:72px;min-width:400px;padding:18px 44px;border-radius:14px}
+@media(max-width:760px){.hero .button.glow-btn{font-size:18px;min-height:62px;min-width:280px}}
