@@ -34,7 +34,7 @@ three=(root/'vendor'/'three.min.js').read_text(); court3d=(root/'court3d.js').re
 html=shell.replace('/* STYLES */',css).replace('/* THREE */',three).replace('/* COURT3D */',court3d).replace('/* DATA */',data).replace('/* APP */',js)
 # A single portable file. The images are embedded so it works from file:// offline.
 mimes={'.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.mp4':'video/mp4'}
-for name,mime in [('logo-text.png','image/png'),('logo.png','image/png'),('hero-background.jpg','image/jpeg'),('courts.webp','image/webp')]:
+for name,mime in [('logo-mark.png','image/png'),('logo-text.png','image/png'),('logo.png','image/png'),('hero-background.jpg','image/jpeg'),('courts.webp','image/webp')]:
  uri='data:'+mime+';base64,'+base64.b64encode((root/'assets'/name).read_bytes()).decode()
  html=html.replace('assets/'+name,uri)
 # Material from the promo film (app screens, 3D glass icons, short muted loops) goes in as a map read by asset() in app.js.

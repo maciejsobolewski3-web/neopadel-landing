@@ -611,3 +611,77 @@ html,body{overflow-x:clip}
 .d-phones .phone:first-child{left:6%;top:0;transform:rotate(-6deg)}
 .d-phones .phone:last-child{left:46%;top:70px;transform:rotate(5deg)}
 @media(max-width:760px){.d-phones .phone{width:180px;border-width:7px;border-radius:30px}.d-phones .phone:last-child{left:42%}}
+/* Tła: jednolite sekcje, poświaty tylko tam, gdzie mają sens (bez powtarzającego się wzoru) */
+.dark-section{background:var(--ink)}
+.k-hero,.community,.connected,.reach{background:radial-gradient(900px 600px at 85% 10%,#ac27b41f,transparent 65%),radial-gradient(800px 600px at 5% 95%,#4b2ad81a,transparent 60%),var(--ink)}
+/* Korty: większe bloki, jasna sekcja jakości i pas ze zdjęciem hali */
+.k-sub{margin-top:110px}
+.k-subblock{margin-top:110px}
+.k-quality{padding:110px 0}
+.k-quality .k-head h2{color:var(--ink)}
+.k-quality .k-specs{border-top-color:#1b132126}
+.k-quality .k-specs>div+div{border-left-color:#1b132120}
+.k-quality .k-specs h3{color:var(--ink)}
+.k-quality .k-specs p{color:#6d6574}
+.k-quality .k-specs b{background:linear-gradient(95deg,#c02bc9,#6f3fe0);-webkit-background-clip:text;background-clip:text}
+.k-band{position:relative;height:clamp(360px,52vw,620px);overflow:hidden;isolation:isolate}
+.k-band img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.k-band-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,var(--ink) 0%,#0c0c1155 40%,#0c0c1188 100%)}
+.k-band-text{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:70px}
+.k-band-text p{font-size:clamp(32px,4.4vw,68px);letter-spacing:-.045em;line-height:1.05;color:#fff}
+.k-band-text em{font-style:normal;background:linear-gradient(95deg,#f08bf5,#7b55f0);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* Zespół: karty obok nagłówka, bez nachodzenia; rozmowa przychodząca → połączona */
+.team-head .kinetic-big{font-size:clamp(40px,5.4vw,90px)}
+.support-ui{position:relative;height:470px}
+.call-card{right:0;top:0}
+.week-card{left:auto;right:180px;bottom:0}
+.call-state em{font-style:normal}
+.call-state .st-on,.call-card.answered .call-state .st-in{display:none}
+.call-card.answered .call-state .st-on{display:inline}
+.call-actions{gap:14px}
+.call-actions .ca{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:#ffffff12;border:1px solid #ffffff1c;color:#fff;transition:transform .4s,opacity .4s}
+.call-actions .ca svg{width:22px;height:22px}
+.call-actions .ca:after{content:none}
+.call-actions .ca-decline{background:#e5484d;border:0}
+.call-actions .ca-decline svg{transform:rotate(135deg)}
+.call-actions .ca-answer{background:#30a46c;border:0;animation:ringme 1s ease-in-out infinite}
+.call-actions .ca-end{background:#e5484d;border:0}
+.call-actions .ca-end svg{transform:rotate(135deg)}
+.call-actions .ca-mic,.call-actions .ca-spk,.call-actions .ca-end{display:none}
+.call-card.answered .ca-decline,.call-card.answered .ca-answer{display:none}
+.call-card.answered .ca-mic,.call-card.answered .ca-spk,.call-card.answered .ca-end{display:grid}
+.call-card:not(.answered) .call-timer{color:#9be3b8}
+@keyframes ringme{0%,100%{transform:rotate(0)}20%{transform:rotate(-14deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(6deg)}}
+.call-actions .end{display:none}
+/* Czat zespołu: stała wysokość, żeby „pisze…” nie przesuwało strony */
+.chat-body{height:330px;min-height:0;overflow:hidden}
+@media(max-width:1200px){.team-head{grid-template-columns:1fr}.support-ui{height:auto;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}.call-card,.week-card{position:static;width:min(330px,100%)}.week-card{align-self:flex-end}}
+@media(max-width:760px){.chat-body{height:300px}.k-sub,.k-subblock{margin-top:70px}.k-band-text{padding-bottom:40px}
+/* wydarzenia na telefonie: scena nad krokami, bez przyklejania */
+.flow-stage{position:relative;top:auto;margin:0 0 20px;height:400px;background:none}
+.flow-step{min-height:0;padding:22px 0;justify-content:flex-start;opacity:.35}
+.flow-step.active{opacity:1}}
+@media(max-width:760px){.support-ui{display:grid}.call-card,.week-card{width:100%}}
+/* Logowanie / zakładanie konta w stylu Linear: spokojny ekran na całe okno */
+.dialog.auth{max-width:none;width:100vw;height:100dvh;max-height:none;margin:0;border:0;border-radius:0;padding:0;background:#0b0a0f;display:grid;place-items:center}
+.dialog.auth[open]{display:grid;animation:fadeIn .35s ease}
+.dialog.auth .dialog-close{top:22px;right:26px}
+.auth-wrap{width:min(420px,calc(100vw - 40px));display:flex;flex-direction:column;align-items:center;text-align:center}
+.auth-mark{width:52px;height:auto;margin-bottom:30px}
+.dialog.auth h2{font-size:26px;font-weight:500;letter-spacing:-.02em;margin:0 0 34px;max-width:none}
+.auth-btns,.auth-form{width:100%;display:grid;gap:14px}
+.auth-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:56px;border-radius:999px;border:1px solid #ffffff17;background:#1a1a1f;color:#f1eef4;font-size:16px;font-weight:500;transition:background .2s,transform .2s}
+.auth-btn:hover{background:#222228}
+.auth-btn.primary{background:linear-gradient(90deg,#6f3fe0,#a33bd1);border:0;color:#fff}
+.auth-btn.primary:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.auth-btn svg{width:20px;height:20px}
+.auth-field{display:grid;gap:8px;text-align:left;font-size:13px;color:#a79db2}
+.auth-field input{min-height:52px;border-radius:14px;border:1px solid #ffffff22;background:#141318;color:#fff;padding:0 16px;font-size:16px}
+.auth-field input:focus{outline:2px solid #a33bd1;outline-offset:1px}
+.auth-legal{margin-top:34px;font-size:14px;line-height:1.6;color:#8e8a96;max-width:340px}
+.auth-legal a{color:#e7e3ec}
+.auth-switch{margin-top:24px;font-size:15px;color:#8e8a96}
+.auth-switch button,.wiz-link{background:none;border:0;padding:0;color:#f1eef4;font-size:inherit;text-decoration:underline;text-underline-offset:3px}
+.auth-note{margin-top:40px;font-size:11px;color:#6d6874}
+.auth-done{font-size:15px;color:#cfc6d8;line-height:1.6}
+@media(max-width:760px){.flow-steps{display:contents}.flow-grid>.flow-steps>.eyebrow,.flow-steps>.eyebrow{order:0}.flow-steps>h2{order:1;margin-bottom:24px}.flow-stage{order:2}.flow-step{order:3}.flow-caption{order:4}.flow-phone{right:auto;left:calc(50% - 85px)}.panel-card{left:0}}
