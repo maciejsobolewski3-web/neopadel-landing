@@ -1439,3 +1439,19 @@ main .cw-preview .eyebrow{display:block}
 @media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}.dialog,.np-toast,.reel>span,.tab-ink{transition:none}.shake{animation:none}}
 [data-reel]>span,.reel,.reel *{font-size:inherit!important;font-weight:inherit!important;letter-spacing:inherit}
 [data-reel] span{color:inherit!important}
+/* ===== "Jeden partner. Cały projekt." – one quiet line that draws through the steps ===== */
+.k-path-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.k-path-head{position:sticky;top:120px}.k-path-head .k-lead{max-width:420px}
+.k-path{position:relative;list-style:none;margin:0;padding:0 0 0 64px;display:grid;gap:34px}
+.kp-line{position:absolute;left:21px;top:22px;bottom:22px;width:1px;background:#ffffff14}
+.kp-line i{position:absolute;inset:0;background:linear-gradient(#c02bc9,#6f3fe0);transform:scaleY(0);transform-origin:0 0;transition:transform .15s linear}
+.k-path li{position:relative;display:block}
+.kp-ic{position:absolute;left:-64px;top:0;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:#0c0c11;border:1px solid #ffffff1f;color:#8f879a;transition:color .4s,border-color .4s,box-shadow .4s,background .4s}
+.kp-ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.k-path li b{display:block;font-size:19px;font-weight:500;letter-spacing:-.02em;color:#8f879a;transition:color .4s;padding-top:3px}
+.k-path li>div>span{display:block;font-size:15px;color:#6f6878;margin-top:6px;line-height:1.55;transition:color .4s}
+.k-path li.lit .kp-ic{color:#f0b3f4;border-color:#d277d966;background:#16121c;box-shadow:0 0 0 4px #c02bc914,0 0 24px #c02bc933}
+.k-path li.lit b{color:#fff}.k-path li.lit>div>span{color:#b5adbf}
+@media(max-width:1050px){.k-path-grid{grid-template-columns:1fr;gap:40px}.k-path-head{position:static}}
+@media(prefers-reduced-motion:reduce){.kp-line i{transform:none}.k-path li .kp-ic{color:#f0b3f4}.k-path li b{color:#fff}.k-path li>div>span{color:#b5adbf}}
+.k-path-head h2{font-size:clamp(32px,3.6vw,54px);line-height:1.06;letter-spacing:-.04em}
