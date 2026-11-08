@@ -1493,3 +1493,4 @@ main .cw-preview .eyebrow{display:block}
 .c-company div{padding:14px 18px;background:#121016}.c-company div.wide{grid-column:1/-1}
 .c-company dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8f879a;margin-bottom:4px}.c-company dd{margin:0;font-size:15px;color:#fff}
 @media(max-width:760px){.c-company{grid-template-columns:1fr 1fr}}
+.rg-key.four{grid-template-columns:repeat(4,1fr)}@media(max-width:1100px){.rg-key.four{grid-template-columns:repeat(2,1fr)}}
