@@ -1239,3 +1239,10 @@ h2.kinetic.accent em{background-image:linear-gradient(95deg,#f2a6f5 0%,#d36fe0 2
 /* new week screenshot: bookings sit in the Sunday column */
 .ts-shot .browser-view img{transform-origin:100% 96%}
 .ts-hit{left:75.9%;top:42.6%;width:16.1%;height:9.6%}
+/* recordings keep their own aspect (1280×722), nothing cropped */
+.obs-vid video{aspect-ratio:1280/722;object-fit:cover}
+/* no small-caps section labels and no "sample data" captions on the page */
+main .eyebrow{display:none}
+main .cw-preview .eyebrow{display:block}
+.real-note,.demo-caption{display:none!important}
+.real-note.keep{display:block!important}
