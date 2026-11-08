@@ -2146,14 +2146,17 @@ window.mountCourt3d = (function () {
     if (!window.THREE) { box.classList.add('nogl'); return null; }
     const cv = box.querySelector('canvas'); let renderer;
     try { renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' }); } catch (e) { box.classList.add('nogl'); return null; }
+    // Phones (iPhone Safari above all) render the court without real-time shadows: the shadow map left the whole court
+    // in shadow there. Wall shadows and lamp pools are baked into the turf anyway, and the turf gets its own glow.
+    const lite = opts.lite ?? (matchMedia('(hover: none)').matches || /iP(hone|ad|od)/.test(navigator.userAgent));
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
     renderer.outputEncoding = THREE.sRGBEncoding; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .9;
-    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.enabled = !lite; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     const scene = new THREE.Scene(); scene.background = new THREE.Color(0x0d0b12); scene.fog = new THREE.Fog(0x0d0b12, 38, 75);
     scene.environment = environment(renderer);
     const cam = new THREE.PerspectiveCamera(34, 1, .1, 200);
     scene.add(new THREE.HemisphereLight(0xe8e2ff, 0x1a1030, .42));
-    const sun = new THREE.DirectionalLight(0xffffff, .95); sun.position.set(14, 26, 9); sun.castShadow = true;
+    const sun = new THREE.DirectionalLight(0xffffff, .95); sun.position.set(14, 26, 9); sun.castShadow = !lite;
     sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 1, far: 70 }); sun.shadow.bias = -.0005; sun.shadow.radius = 4;
     scene.add(sun);
 
@@ -2196,7 +2199,7 @@ window.mountCourt3d = (function () {
     function build() {
       dispose(court); while (court.children.length) court.remove(court.children[0]);
       const m = MODELS[current], W = m.w, hw = W / 2, hl = L / 2, s = m.steel, H = m.glassH + m.meshH, heavy = m.posts === 'all';
-      const turfMat = new THREE.MeshStandardMaterial({ map: bakeTurf(m, TURFS[turf]), roughness: .95 });
+      const turfMap = bakeTurf(m, TURFS[turf]), turfMat = new THREE.MeshStandardMaterial(lite ? { map: turfMap, roughness: .95, emissive: 0xffffff, emissiveMap: turfMap, emissiveIntensity: .25 } : { map: turfMap, roughness: .95 });
       box3(W, .06, L, 0, -.03, 0, turfMat, false);
       ground.material.map && ground.material.map.dispose(); ground.material.map = bakeGround(m); ground.material.needsUpdate = true;
       // net with posts and a white top band, all inside the side walls
