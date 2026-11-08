@@ -1472,3 +1472,8 @@ main .cw-preview .eyebrow{display:block}
 @media(max-width:1000px){.team-row.r4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.team-row.r2,.team-row.r3{grid-template-columns:1fr 1fr}.team-row.r3 .member:last-child{grid-column:1/-1}}
 @media(max-width:760px){.team-row.r2{grid-template-columns:1fr}.team-row.r2 .member{flex-direction:row;text-align:left;padding:14px 16px}}
+/* call card: NeoPadel mark instead of initials, breathing softly inside the rings */
+.call-ring .call-logo{background:radial-gradient(circle at 50% 40%,#2a1f3a,#141019 70%);border:1px solid #ffffff22;box-shadow:inset 0 1px 0 #ffffff22,0 0 30px #c02bc944}
+.call-logo img{width:44px;height:auto;filter:drop-shadow(0 0 10px #c02bc9aa);animation:logoBreath 2.4s ease-in-out infinite}
+@keyframes logoBreath{0%,100%{transform:scale(1);filter:drop-shadow(0 0 8px #c02bc988)}50%{transform:scale(1.08);filter:drop-shadow(0 0 18px #d277d9cc)}}
+@media(prefers-reduced-motion:reduce){.call-logo img{animation:none}}
