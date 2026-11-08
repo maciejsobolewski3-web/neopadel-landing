@@ -1316,3 +1316,25 @@ main .cw-preview .eyebrow{display:block}
 @media(max-width:760px){.cbs-photo .obs-online{left:12px;right:auto;top:12px}}
 .as-tile{text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%}
 .as-link-plain{background:none;border:0;font:inherit;cursor:pointer;color:inherit}
+/* official store badges (Apple and Google artwork, unmodified) + matching web badge */
+.store-badge{display:inline-flex;align-items:center;height:52px;transition:transform .2s,filter .2s}
+.store-badge:hover{transform:translateY(-2px);filter:brightness(1.15)}
+.store-badge img{height:100%;width:auto}
+.store-badge.web{gap:10px;padding:0 16px 0 12px;border-radius:9px;background:#000;border:1px solid #a6a6a6;color:#fff}
+.store-badge.web svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:1.5}
+.store-badge.web span{display:grid;line-height:1.05;font-size:19px;font-weight:600;letter-spacing:-.01em}.store-badge.web small{font-size:10px;font-weight:400;letter-spacing:.01em}
+.a-store-btns{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+/* delivery tracker in the production scene */
+.cbs-track{position:relative;display:grid;grid-template-columns:repeat(3,1fr);padding:18px 14px 14px;border-radius:16px;background:#17131ef0;border:1px solid #ffffff22;box-shadow:inset 0 1px 0 #ffffff26}
+.cbs-line{position:absolute;left:calc(16.66% + 2px);right:calc(16.66% + 2px);top:27px;height:2px;background:#ffffff1a;border-radius:2px;overflow:hidden}
+.cbs-line i{display:block;height:100%;width:0;background:linear-gradient(90deg,#c02bc9,#9a7af7);box-shadow:0 0 12px #d277d9}
+.ob-scene.on .cbs-line i{animation:track 2.4s cubic-bezier(.6,0,.3,1) 2s forwards}
+@keyframes track{to{width:100%}}
+.cbs-stop{position:relative;display:grid;justify-items:center;gap:8px;text-align:center}
+.cbs-stop span{width:20px;height:20px;border-radius:50%;background:#17131e;border:2px solid #ffffff38;position:relative;z-index:1}
+.cbs-stop b{font-size:12px;font-weight:500;color:#8f879a}
+.ob-scene.on .cbs-stop span{animation:stopon .3s calc(2s + var(--d)*1.1s) forwards}
+.ob-scene.on .cbs-stop b{animation:stoptxt .3s calc(2s + var(--d)*1.1s) forwards}
+@keyframes stopon{to{background:linear-gradient(135deg,#c02bc9,#6f3fe0);border-color:transparent;box-shadow:0 0 0 4px #c02bc933,0 0 16px #c02bc9aa}}
+@keyframes stoptxt{to{color:#fff}}
+@media(max-width:600px){.store-badge{height:46px}}
