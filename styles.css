@@ -1372,3 +1372,70 @@ main .cw-preview .eyebrow{display:block}
 @media(max-width:600px){.rg-key{grid-template-columns:1fr 1fr}.rg-hero{padding:120px 0 20px}}
 .cw-check a{color:#e0b2e4;text-decoration:underline;text-underline-offset:3px}
 .rg-doc ol+p{margin-top:18px}
+/* ===== Motion pass (techniques after transitions.dev) ===== */
+/* page transitions: old page fades down with blur, new one rises; header stays still */
+.header{view-transition-name:np-header}
+::view-transition-old(root){animation:vtOut .22s ease both}
+::view-transition-new(root){animation:vtIn .5s cubic-bezier(.16,.84,.24,1) both}
+::view-transition-group(np-header){animation:none}
+@keyframes vtOut{to{opacity:0;transform:translateY(-10px);filter:blur(6px)}}
+@keyframes vtIn{from{opacity:0;transform:translateY(16px);filter:blur(8px)}}
+/* modal open/close with scale, fade and blur, backdrop fades too */
+.dialog{opacity:0;transform:translateY(10px) scale(.97);filter:blur(4px);transition:opacity .28s ease,transform .38s cubic-bezier(.16,.84,.24,1),filter .28s ease,overlay .38s allow-discrete,display .38s allow-discrete}
+.dialog[open]{opacity:1;transform:none;filter:none}
+@starting-style{.dialog[open]{opacity:0;transform:translateY(10px) scale(.97);filter:blur(4px)}}
+.dialog::backdrop{opacity:0;transition:opacity .3s ease,overlay .38s allow-discrete,display .38s allow-discrete}
+.dialog[open]::backdrop{opacity:1}
+@starting-style{.dialog[open]::backdrop{opacity:0}}
+.dialog.auth,.dialog.auth[open]{transform:none}
+/* origin-aware dropdowns */
+.mega{transform-origin:50% 0}.acct-menu{transform-origin:100% 0}
+@keyframes popIn{from{opacity:0;transform:translateY(-6px) scale(.96);filter:blur(4px)}}
+/* error shake */
+.shake{animation:shake .45s cubic-bezier(.36,.07,.19,.97) both}
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
+/* sliding tab ink */
+[role=tablist].has-ink{position:relative}
+[role=tablist].has-ink [role=tab][aria-selected=true]{border-color:transparent}
+.tab-ink{position:absolute;left:0;bottom:-1px;height:2px;border-radius:2px;background:linear-gradient(90deg,#c02bc9,#6f3fe0);transition:transform .45s cubic-bezier(.16,.84,.24,1),width .45s cubic-bezier(.16,.84,.24,1);pointer-events:none}
+/* toast */
+.np-toast{position:fixed;left:50%;bottom:28px;z-index:2147483000;display:flex;align-items:center;gap:10px;padding:12px 18px 12px 14px;border-radius:999px;background:#1d1825ee;border:1px solid #ffffff26;box-shadow:inset 0 1px 0 #ffffff30,0 20px 50px #000a;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:#fff;font-size:14px;opacity:0;transform:translate(-50%,16px) scale(.96);filter:blur(4px);pointer-events:none;transition:opacity .3s,transform .45s cubic-bezier(.16,.84,.24,1),filter .3s}
+.np-toast.show{opacity:1;transform:translate(-50%,0);filter:none}
+.np-toast i{width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#c02bc9,#6f3fe0);position:relative;flex:none}
+.np-toast i:after{content:'';position:absolute;left:6px;top:3px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+/* reel counters */
+.reel{display:inline-block;height:1.1em;line-height:1.1em;overflow:hidden;vertical-align:-.12em}
+.reel>span{display:flex;flex-direction:column;transform:translateY(0);transition:transform 1.4s cubic-bezier(.2,.9,.1,1) calc(var(--k)*.12s)}
+.reel i{font-style:normal;height:1.1em}
+.spin .reel>span{transform:translateY(calc((10 + var(--d))*-1.1em))}
+.rg-kpi b[data-reel]{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#f0b3f4}
+.cm-ev-seats b[data-reel]{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#e7a7f0}
+/* avatar group: hovered seat lifts, neighbours follow with distance falloff, bouncy return */
+.ui-seat,.cm-seat span,.cm-ev-people span{transition:translate .45s cubic-bezier(.34,1.7,.5,1)}
+.ui-match:hover .ui-seat{translate:0 0}
+.ui-seat:hover,.cm-seat:hover span,.cm-ev-people span:hover{translate:0 -7px}
+.ui-seat:has(+ .ui-seat:hover),.ui-seat:hover + .ui-seat,.cm-ev-people span:has(+ span:hover),.cm-ev-people span:hover + span{translate:0 -3px}
+/* like with particle burst (community modal) */
+.cmm .ui-react span:first-child{position:relative;cursor:pointer;user-select:none;transition:color .2s}
+.cmm .ui-react span.liked{color:#c02bc9;font-weight:700}
+.heart{display:inline-block;animation:heartPop .45s cubic-bezier(.34,1.8,.5,1)}
+@keyframes heartPop{0%{transform:scale(.4)}60%{transform:scale(1.35)}100%{transform:scale(1)}}
+.burst{position:absolute;left:4px;top:50%;width:0;height:0;pointer-events:none}
+.burst i{position:absolute;width:5px;height:5px;border-radius:50%;background:#d277d9;animation:burst .6s ease-out forwards}
+.burst i:nth-child(1){--x:14px;--y:-12px}.burst i:nth-child(2){--x:-12px;--y:-14px}.burst i:nth-child(3){--x:18px;--y:4px}.burst i:nth-child(4){--x:-16px;--y:6px}.burst i:nth-child(5){--x:4px;--y:-20px;background:#9a7af7}.burst i:nth-child(6){--x:-4px;--y:16px;background:#9a7af7}.burst i:nth-child(7){--x:12px;--y:14px;background:#f0b3f4}.burst i:nth-child(8){--x:-14px;--y:-4px;background:#f0b3f4}
+@keyframes burst{from{transform:translate(0,0) scale(1);opacity:1}to{transform:translate(var(--x),var(--y)) scale(.2);opacity:0}}
+.cmm .ui-share i{cursor:pointer}
+/* checkboxes: the tick draws on */
+.cw-check input,.auth-checks input[type=checkbox]{appearance:none;-webkit-appearance:none;position:relative;width:20px;height:20px;flex:none;border-radius:6px;border:1.5px solid #ffffff4d;background:#0e0c12;cursor:pointer;transition:background .25s,border-color .25s,box-shadow .25s}
+.cw-check input:checked,.auth-checks input[type=checkbox]:checked{background:linear-gradient(135deg,#c02bc9,#6f3fe0);border-color:transparent;box-shadow:0 0 14px #c02bc966}
+.cw-check input:after,.auth-checks input[type=checkbox]:after{content:'';position:absolute;left:6px;top:2.5px;width:5px;height:10px;border:solid #fff;border-width:0 2.2px 2.2px 0;transform:rotate(45deg);clip-path:inset(100% 0 0 0);transition:clip-path .28s cubic-bezier(.65,0,.35,1) .05s}
+.cw-check input:checked:after,.auth-checks input[type=checkbox]:checked:after{clip-path:inset(0 0 0 0)}
+.cw-check input:focus-visible,.auth-checks input:focus-visible{outline:2px solid #de81e5;outline-offset:2px}
+/* shimmer on the "checking" status line */
+.obs-status .wait{background:linear-gradient(90deg,#ffc56b 0%,#ffc56b 35%,#fff6e0 50%,#ffc56b 65%,#ffc56b 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmerTxt 1.3s linear infinite}
+@keyframes shimmerTxt{from{background-position:100% 0}to{background-position:-20% 0}}
+/* toggles land with a double bounce */
+@keyframes tgdot{0%{transform:translateX(0)}60%{transform:translateX(18px)}78%{transform:translateX(14.5px)}90%{transform:translateX(16.6px)}100%{transform:translateX(16px)}}
+@media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}.dialog,.np-toast,.reel>span,.tab-ink{transition:none}.shake{animation:none}}
+[data-reel]>span,.reel,.reel *{font-size:inherit!important;font-weight:inherit!important;letter-spacing:inherit}
+[data-reel] span{color:inherit!important}

@@ -32,7 +32,7 @@ const communitySection = () => `<section class="community dark-section" id="spol
 <div class="bento-wrap"><div class="ts-orbs" aria-hidden="true"><i></i><i></i><i></i></div><div class="bento" data-reveal>
 <article class="tile tile-feed" role="button" tabindex="0" data-cm="feed" aria-label="Tablica społeczności: zobacz więcej"><span class="cm-plus" aria-hidden="true"><i></i></span><h3>Tablica społeczności</h3><p>Posty klubu, graczy i NeoPadel: zdjęcia, wideo, polubienia i komentarze. Do posta podpinasz wydarzenie albo otwarty mecz.</p><div class="ui ui-feed" aria-hidden="true"><div class="ui-post"><div class="ui-head"><span class="ui-av">K</span><div><b>Twój klub</b><small><em>Klub</em> · 2 godz.</small></div></div><p>Piątkowe Americano wraca! Poziom 2–4, start 19:00. Kto gra?</p><div class="ui-link"><small>WYDARZENIE · PT 19:00</small><b>Piątkowe Americano</b><span>12/16 miejsc</span></div><div class="ui-react"><span>♥ 24</span><span>Komentarze · 9</span></div></div><div class="ui-post ui-post-sm"><div class="ui-head"><span class="ui-av np">N</span><div><b>NeoPadel</b><small><em class="off">Oficjalne</em> · 1 dzień</small></div></div><p>Nowy NeoPadel już jest! Odświeżyliśmy aplikację: teraz łatwiej znajdziesz mecze, wydarzenia i korty.</p><div class="ui-react"><span>♥ 58</span><span>Komentarze · 12</span></div></div><div class="ui-post ui-post-sm"><div class="ui-head"><span class="ui-av u2">M</span><div><b>Gracz klubu</b><small>15 min</small></div></div><p>Brakuje jednego do gry dziś o 20:30, ktoś chętny?</p></div></div></article>
 <article class="tile tile-push" role="button" tabindex="0" data-cm="push" aria-label="Powiadomienia do graczy: zobacz więcej"><span class="cm-plus" aria-hidden="true"><i></i></span><h3>Powiadomienia do Twoich graczy</h3><p>Z panelu do graczy klubu albo uczestników wydarzenia. Od razu lub zaplanowane.</p><div class="ui ui-notifs" aria-hidden="true"><div class="ui-notif"><small>TWÓJ KLUB · TERAZ</small><b>Ostatnie 4 miejsca na Americano</b></div><div class="ui-notif later"><small>ZAPLANOWANE · 1 H PRZED STARTEM</small><b>Widzimy się o 19:00 na kortach!</b></div></div></article>
-<article class="tile tile-events" role="button" tabindex="0" data-cm="events" aria-label="Wydarzenia: zobacz więcej"><span class="cm-plus" aria-hidden="true"><i></i></span><h3>Wydarzenia</h3><p>Americano, Mexicano, King of Court, turnieje. Zapisy i płatność w aplikacji, publiczna strona do udostępnienia.</p><div class="ui ui-event" aria-hidden="true"><div class="ui-chips"><span>Americano</span><span>Mexicano</span><span>King of Court</span></div><div class="ui-seats"><b>16/16</b><span>Lista rezerwowa · 3 osoby</span></div><div class="ui-share">neopadel.app/pl/events/…<i>Kopiuj link</i></div></div></article>
+<article class="tile tile-events" role="button" tabindex="0" data-cm="events" aria-label="Wydarzenia: zobacz więcej"><span class="cm-plus" aria-hidden="true"><i></i></span><h3>Wydarzenia</h3><p>Americano, Mexicano, King of Court, turnieje. Zapisy i płatność w aplikacji, publiczna strona do udostępnienia.</p><div class="ui ui-event" aria-hidden="true"><div class="ui-chips"><span>Americano</span><span>Mexicano</span><span>King of Court</span></div><div class="ui-seats"><b data-reel>16/16</b><span>Lista rezerwowa · 3 osoby</span></div><div class="ui-share">neopadel.app/pl/events/…<i>Kopiuj link</i></div></div></article>
 <article class="tile tile-match" role="button" tabindex="0" data-cm="match" aria-label="Otwarte mecze: zobacz więcej"><span class="cm-plus" aria-hidden="true"><i></i></span><h3>Otwarte mecze</h3><p>Publikujesz mecz na cztery osoby, gracze dołączają, płacą za miejsce i zapraszają znajomych.</p><div class="ui ui-match" aria-hidden="true"><div class="ui-seat on">A</div><div class="ui-seat on">M</div><div class="ui-seat on">K</div><div class="ui-seat free">+</div><span class="ui-join">Dołącz · 3/4</span></div></article>
 <article class="tile tile-friends" role="button" tabindex="0" data-cm="friends" aria-label="Znajomi i ulubione kluby: zobacz więcej"><span class="cm-plus" aria-hidden="true"><i></i></span><h3>Znajomi i ulubione kluby</h3><p>Gracze dodają się do znajomych i zapraszają ich na gry. Kto obserwuje klub, dostaje podsumowanie nowych wydarzeń i meczów.</p><div class="ui ui-friends" aria-hidden="true"><div class="ui-req"><span class="ui-av u3">O</span><div><b>Nowe zaproszenie</b><small>do znajomych</small></div><i>Akceptuj</i></div><div class="ui-digest">♡ W Twoich klubach: 2 nowe wydarzenia i 3 otwarte mecze</div></div></article>
 </div></div><p class="real-note">Fragmenty interfejsu z danymi przykładowymi.</p></div></section>`;
@@ -192,8 +192,8 @@ function npLoad() { let d; try { d = JSON.parse(localStorage.getItem(NP_KEY)); }
 let NP = npLoad();
 function npSave() { try { localStorage.setItem(NP_KEY, JSON.stringify({ user: NP.user, db: NP.db })); } catch (e) { /* private mode or full: keep in memory */ } }
 function npSignIn(name, email) { email = (email || 'jan@klub.pl').toLowerCase(); NP.user = { name: name || 'Jan Kowalski', email }; if (!NP.db[email]) NP.db[email] = DEMO[email] ? DEMO[email].clubs() : []; NP.clubs = NP.db[email]; npSave(); syncAccountButton(); trigger = null; }
-function npResetDemo() { const e = NP.user.email; NP.db[e] = DEMO[e].clubs(); NP.clubs = NP.db[e]; npSave(); cw = { i: -1, step: 0, d: {} }; route(); }
-function npSignOut() { NP.user = null; NP.clubs = []; npSave(); syncAccountButton(); location.hash = '#/'; }
+function npResetDemo() { const e = NP.user.email; NP.db[e] = DEMO[e].clubs(); NP.clubs = NP.db[e]; npSave(); cw = { i: -1, step: 0, d: {} }; route(); toast('Przywrócono dane demo'); }
+function npSignOut() { NP.user = null; NP.clubs = []; npSave(); syncAccountButton(); location.hash = '#/'; toast('Wylogowano'); }
 function syncAccountButton() { const b = $('[data-login]'), m = $('.nav-acct'), sl = $('[data-login-sheet]'); if (!b || !m) return; b.hidden = !!NP.user; m.hidden = !NP.user; m.open = false; if (sl) sl.textContent = NP.user ? 'Twoje konto' : 'Zaloguj się'; if (!NP.user) return; $('.nav-avatar', m).textContent = initials(NP.user.name).slice(0, 2); $('[data-acct-name]', m).textContent = NP.user.name; $('[data-acct-mail]', m).textContent = NP.user.email; }
 const STATUS = { draft: ['Szkic', 'Dokończ tworzenie klubu'], review: ['W weryfikacji', 'Sprawdzamy dane firmy. Panel już działa.'], active: ['Aktywny', 'Klub widoczny dla graczy w aplikacji.'] };
 const esc = s => escapeHtml(s == null ? '' : s);
@@ -257,7 +257,7 @@ function initClubWizard() {
   body.addEventListener('click', e => { const up = e.target.closest('[data-upload]'); if (up) $('input[type=file]', up).click(); });
   body.addEventListener('change', e => { const t = e.target; if (t.type !== 'file' || !t.files[0]) return; const k = t.closest('[data-upload]').dataset.upload, r = new FileReader();
     r.onload = () => { const im = new Image(); im.onload = () => { const max = k === 'logo' ? 320 : 1000, sc = Math.min(1, max / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = im.width * sc; c.height = im.height * sc; c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); cw.d[k] = c.toDataURL('image/jpeg', .82); npSave(); render(); }; im.src = r.result; }; r.readAsDataURL(t.files[0]); });
-  $('.cw-form', root).addEventListener('submit', e => { e.preventDefault(); const m = cwValid(cw.step); if (m) { err.textContent = m; return; }
+  $('.cw-form', root).addEventListener('submit', e => { e.preventDefault(); const m = cwValid(cw.step); if (m) { err.textContent = m; shake($('.cw-form', root)); return; }
     if (cw.step < 4) { cw.step++; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
     cw.d.status = 'review'; cw.d.created = Date.now(); npSave(); clubCreated(cw.i); cw = { i: -1, step: 0, d: {} }; });
   $('[data-cw-back]', root).addEventListener('click', () => { if (cw.step) { cw.step--; render(); } });
@@ -314,7 +314,7 @@ const CM = {
 const cmVis = k => ({
   feed: () => `<div class="ui ui-feed cm-feed">${$('.tile-feed .ui-feed')?.innerHTML || ''}</div>`,
   push: () => `<div class="cm-push"><div class="cm-compose"><small>PANEL KLUBU · NOWE POWIADOMIENIE</small><b>Ostatnie 4 miejsca na Americano</b><div class="cm-row"><span>Odbiorcy</span><i class="on">Gracze klubu</i><i>Uczestnicy wydarzenia</i></div><div class="cm-row"><span>Wysyłka</span><i>Teraz</i><i class="on">Zaplanuj · Pt 18:00</i></div><em>Zaplanuj wysyłkę</em></div><div class="cm-lock"><div class="cm-time">18:00<small>piątek</small></div><div class="ui-notif"><small>TWÓJ KLUB · TERAZ</small><b>Ostatnie 4 miejsca na Americano</b></div><div class="ui-notif later"><small>ZAPLANOWANE · 1 H PRZED STARTEM</small><b>Widzimy się o 19:00 na kortach!</b></div></div></div>`,
-  events: () => `<div class="cm-event"><div class="cm-ev-top"><span>AMERICANO</span><b>Piątkowe Americano</b><small>Pt 19:00 · Poziom 2–4</small></div><div class="cm-ev-body"><div class="cm-ev-seats"><b>12/16</b><span>miejsc zajętych</span></div><div class="cm-bar"><i style="width:75%"></i></div><div class="cm-ev-people">${['A', 'M', 'K', 'O', 'J'].map(x => `<span>${x}</span>`).join('')}<em>+7</em></div><span class="cm-btn">Zapisz się i zapłać</span><div class="ui-share">neopadel.app/pl/events/…<i>Kopiuj link</i></div></div></div>`,
+  events: () => `<div class="cm-event"><div class="cm-ev-top"><span>AMERICANO</span><b>Piątkowe Americano</b><small>Pt 19:00 · Poziom 2–4</small></div><div class="cm-ev-body"><div class="cm-ev-seats"><b data-reel>12/16</b><span>miejsc zajętych</span></div><div class="cm-bar"><i style="width:75%"></i></div><div class="cm-ev-people">${['A', 'M', 'K', 'O', 'J'].map(x => `<span>${x}</span>`).join('')}<em>+7</em></div><span class="cm-btn">Zapisz się i zapłać</span><div class="ui-share">neopadel.app/pl/events/…<i>Kopiuj link</i></div></div></div>`,
   match: () => `<div class="cm-match"><div class="cm-m-head"><span class="cm-tag">Otwarty mecz</span><b>Sob 20:30 · 90 min</b><small>Panorama 01 · debel</small></div><div class="cm-m-seats">${['A', 'M', 'K'].map((x, i) => `<div class="cm-seat on"><span>${x}</span><small>${['Ania', 'Marek', 'Kuba'][i]}</small></div>`).join('')}<div class="cm-seat free"><span>+</span><small>wolne</small></div></div><span class="cm-btn">Dołącz i zapłać za miejsce</span><span class="cm-btn ghost">Zaproś znajomego</span></div>`,
   friends: () => `<div class="cm-friends"><div class="ui-req"><span class="ui-av u3">O</span><div><b>Ola zaprasza Cię na mecz</b><small>Sob 20:30 · Panorama 01</small></div><i>Akceptuj</i></div><div class="ui-req"><span class="ui-av">K</span><div><b>Nowe zaproszenie</b><small>do znajomych</small></div><i>Akceptuj</i></div><div class="cm-favs"><span>♥ Padel Arena Piaseczno</span><span>♥ Padel Park Rzeszów</span></div><div class="ui-digest">♡ W Twoich klubach: 2 nowe wydarzenia i 3 otwarte mecze</div></div>`,
 })[k]();
@@ -322,6 +322,7 @@ function cmModal(k) {
   const d = CM[k];
   openDialog(`<div class="cmm cmm-${k}"><div class="cmm-text"><span class="ts-chip"><i></i>Społeczność NeoPadel</span><h2 id="dialog-title" tabindex="-1">${d.title}</h2><p class="cmm-lead">${d.lead}</p><ul class="ts-list cmm-list">${d.list.map(x => `<li>${x}</li>`).join('')}</ul><ol class="cmm-steps">${d.steps.map(([t, x]) => `<li><b>${t}</b><span>${x}</span></li>`).join('')}</ol></div><div class="cmm-stage" aria-hidden="true">${cmVis(k)}</div><div class="tsm-foot"><button class="button" data-auth="signup">Załóż klub za darmo</button><span class="real-note">Fragmenty interfejsu z danymi przykładowymi</span></div></div>`);
   dialog.classList.add('wide', 'glassy');
+  initReels();
 }
 document.addEventListener('click', e => { const c = e.target.closest('[data-cm]'); if (c) { trigger = c; cmModal(c.dataset.cm); } });
 document.addEventListener('keydown', e => { const c = e.target.closest?.('[data-cm]'); if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); c.click(); } });
@@ -386,7 +387,7 @@ const RG_KEY = [['0 zł', 'Konto, klub i Panel', 'Wszystkie funkcje bez abonamen
 function termsPage() {
   const src = document.getElementById('tpl-regulamin'), html = src ? src.innerHTML : '';
   const toc = [...html.matchAll(/<section id="(r-\d+)" class="rg-sec"><h2>(.*?)<\/h2>/g)].map(([, id, t]) => `<li><button type="button" data-rg="${id}">${t}</button></li>`).join('');
-  return `<section class="rg-hero dark-section"><div class="wrap"><span class="ts-chip rg-chip"><i></i>Projekt · wersja z 8 listopada 2026</span>${kin('Regulamin *dla Klubów.*', 'h1', 'kinetic-big')}<p class="k-lead" data-reveal>Zasady korzystania z Panelu Klubu i usług NeoPadel. Nie podpisujesz żadnej umowy: regulamin akceptujesz przy zakładaniu klubu.</p><div class="rg-key" data-reveal>${RG_KEY.map(([v, t, d], i) => `<div class="rg-kpi" style="--i:${i}"><b>${v}</b><span>${t}</span><small>${d}</small></div>`).join('')}</div></div></section>
+  return `<section class="rg-hero dark-section"><div class="wrap"><span class="ts-chip rg-chip"><i></i>Projekt · wersja z 8 listopada 2026</span>${kin('Regulamin *dla Klubów.*', 'h1', 'kinetic-big')}<p class="k-lead" data-reveal>Zasady korzystania z Panelu Klubu i usług NeoPadel. Nie podpisujesz żadnej umowy: regulamin akceptujesz przy zakładaniu klubu.</p><div class="rg-key" data-reveal>${RG_KEY.map(([v, t, d], i) => `<div class="rg-kpi" style="--i:${i}"><b data-reel>${v}</b><span>${t}</span><small>${d}</small></div>`).join('')}</div></div></section>
 <section class="rg-body dark-section"><div class="wrap rg-grid"><nav class="rg-toc" aria-label="Spis treści"><p>Spis treści</p><ol>${toc}</ol><button class="button rg-cta" data-auth="signup">Załóż klub za darmo</button></nav><details class="rg-toc-m"><summary>Spis treści</summary><ol>${toc}</ol></details><article class="rg-doc">${html}</article></div></section>`;
 }
 function initTerms() {
@@ -396,11 +397,47 @@ function initTerms() {
   $$('.rg-sec', doc).forEach(sec => io.observe(sec));
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-rg]'); if (!b) return; const t = document.getElementById(b.dataset.rg); if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'start' }); const d = b.closest('details'); if (d) d.open = false; } });
+// Micro-interactions (shake, sliding tab ink, toast, reels, likes, copy link), techniques after transitions.dev.
+addEventListener('resize', () => $$('[role=tablist]').forEach(moveInk), { passive: true });
+function shake(el) { if (!el) return; el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
+function moveInk(list) {
+  if (!list) return; let ink = $('.tab-ink', list);
+  if (!ink) { ink = document.createElement('span'); ink.className = 'tab-ink'; ink.setAttribute('aria-hidden', 'true'); list.appendChild(ink); list.classList.add('has-ink'); }
+  const on = $('[aria-selected="true"]', list); if (!on) return;
+  ink.style.width = on.offsetWidth + 'px'; ink.style.transform = `translateX(${on.offsetLeft}px)`;
+}
+function toast(msg) {
+  let t = $('.np-toast'); if (!t) { t = document.createElement('div'); t.className = 'np-toast'; t.setAttribute('role', 'status'); }
+  (dialog.open ? dialog : document.body).appendChild(t); // inside an open modal so it is in the top layer
+  t.innerHTML = `<i aria-hidden="true"></i>${msg}`; t.classList.remove('show'); void t.offsetWidth; t.classList.add('show');
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2400);
+}
+// Digits spin like a slot reel to their value when they scroll into view.
+function initReels() {
+  const io = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; io.unobserve(e.target); e.target.classList.add('spin'); }), { threshold: .6 });
+  $$('[data-reel]').forEach(el => {
+    if (!el.dataset.built) {
+      el.dataset.built = 1; const txt = el.textContent; el.setAttribute('aria-label', txt);
+      let k = 0; el.innerHTML = [...txt].map(ch => /\d/.test(ch) ? `<span class="reel" aria-hidden="true" style="--d:${+ch};--k:${k++}"><span>${'0123456789'.repeat(2).split('').map(n => `<i>${n}</i>`).join('')}</span></span>` : `<span aria-hidden="true">${ch}</span>`).join('');
+    }
+    io.observe(el);
+  });
+}
+document.addEventListener('click', e => {
+  const like = e.target.closest('.cmm .ui-react span:first-child');
+  if (like) { const on = like.classList.toggle('liked'); const n = parseInt(like.textContent.replace(/\D/g, ''), 10) + (on ? 1 : -1); like.innerHTML = `<b class="heart" aria-hidden="true">♥</b> ${n}`; if (on) { const burst = document.createElement('span'); burst.className = 'burst'; burst.innerHTML = '<i></i>'.repeat(8); like.appendChild(burst); setTimeout(() => burst.remove(), 700); } return; }
+  const copy = e.target.closest('.ui-share i');
+  if (copy && copy.closest('.cmm')) { navigator.clipboard?.writeText('https://neopadel.app/pl').catch(() => {}); toast('Link do wydarzenia skopiowany'); }
+});
 const routes = {'':home,konto:accountPage,'nowy-klub':clubWizardPage,'regulamin-klubow':termsPage,platforma:appPage,aplikacja:appPage,budowa:courtsPage,korty:courtsPage,autonomia:autonomy,sklep:shop,gracze:players,realizacje:projects,wiedza:knowledge,'o-nas':about,rozwiazania:about,kontakt:contact,opinie:opinions,pobierz:download};
 const routeTitles = {'':'Twój klub. Twój system.',konto:'Twoje konto','nowy-klub':'Stwórz klub','regulamin-klubow':'Regulamin dla Klubów',platforma:'Aplikacja',aplikacja:'Aplikacja',budowa:'Korty',korty:'Korty',autonomia:'Korty autonomiczne',sklep:'Sklep partnerski',gracze:'Dla graczy',realizacje:'Realizacje',wiedza:'Poradniki','o-nas':'O nas',rozwiazania:'Rozwiązania',kontakt:'Kontakt',opinie:'Opinie',pobierz:'Pobierz aplikację'};
 let firstRender=true;
 function route(){
  if(location.hash && !location.hash.startsWith('#/'))return;
+ if(!firstRender && document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches){document.startViewTransition(renderRoute);return;}
+ renderRoute();
+}
+function renderRoute(){
  const key=decodeURIComponent(location.hash.replace(/^#\/?/,''));
  const render=routes[key] || (key.startsWith('artykul-')?()=>article(Number(key.slice(8))):notFound);
  $('#main').innerHTML=render();
@@ -429,6 +466,8 @@ function enhance(){
  mountConfigurator();
  initClubWizard();
  initTerms();
+ initReels();
+ $$('[role=tablist]').forEach(moveInk);
  initObFlow();
  initScrub();
  initCount();
@@ -546,7 +585,7 @@ function auth(mode='login',step='start'){
 const validPassword = p => { const v=p.trim(); return v.length>=8 && v.length<=128 && /\p{L}/u.test(v) && /\d/.test(v); };
 document.addEventListener('change',e=>{const f=e.target.closest('[data-auth-signup]');if(!f)return;const ok=[...f.querySelectorAll('[data-req]')].every(c=>c.checked);f.querySelector('[data-auth-submit]').disabled=!ok;f.querySelector('[data-auth-hint]').hidden=ok;});
 document.addEventListener('submit',e=>{
- const f=e.target;const err=m=>{const p=f.querySelector('.auth-err');p.textContent=m;};
+ const f=e.target;const err=m=>{const p=f.querySelector('.auth-err');p.textContent=m;shake(f);};
  if(f.matches('[data-auth-signup]')){e.preventDefault();const d=Object.fromEntries(new FormData(f));
   if(!d.name.trim())return err('Podaj imię i nazwisko.');
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email.trim()))return err('Podaj poprawny adres email.');
@@ -557,7 +596,7 @@ document.addEventListener('submit',e=>{
  if(f.matches('[data-auth-verify]')){e.preventDefault();const c=new FormData(f).get('code');if(!/^\d{6}$/.test(c))return err('Kod ma 6 cyfr.');if(c!==DEMO_CODE)return err('Nieprawidłowy kod. W prototypie kod to 123456.');npSignIn(authName,authEmail);dialog.close();location.hash='#/konto';}
 });
 function login(){auth('login');}
-function selectTab(button,auto=false){$$('[data-tab]').forEach(b=>{b.setAttribute('aria-selected',String(b===button));b.tabIndex=b===button?0:-1;});$$('[data-pane]').forEach(p=>p.classList.toggle('on',p.dataset.pane===button.dataset.tab));if(!auto)stopShots();}
+function selectTab(button,auto=false){requestAnimationFrame(()=>moveInk(button.closest('[role=tablist]')));$$('[data-tab]').forEach(b=>{b.setAttribute('aria-selected',String(b===button));b.tabIndex=b===button?0:-1;});$$('[data-pane]').forEach(p=>p.classList.toggle('on',p.dataset.pane===button.dataset.tab));if(!auto)stopShots();}
 document.addEventListener('click',e=>{const b=e.target.closest('button,a');if(!b)return;
  if(b.hasAttribute('data-onboard')){closeMenu();trigger=b;onboard();}
  if(b.hasAttribute('data-login-sheet')){closeMenu();if(NP.user){location.hash='#/konto';}else{trigger=$('#menu-toggle');login();}return;}
