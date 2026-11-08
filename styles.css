@@ -1487,3 +1487,9 @@ main .cw-preview .eyebrow{display:block}
 .support-ui .week-card{transition-delay:.18s}
 .support-ui.in .call-card,.support-ui.in .week-card{opacity:1;transform:none;filter:none;box-shadow:0 30px 70px #000a,0 0 0 1px #ffffff0a;animation:none}
 @media(prefers-reduced-motion:reduce){.support-ui .call-card,.support-ui .week-card{opacity:1;transform:none;filter:none;transition:none}}
+.footer-legal{font-size:11px;line-height:1.6;color:#6f6878;max-width:980px;margin:40px 0 0}
+.footer-legal+.footer-bottom{margin-top:18px}
+.c-company{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:28px 0 0;border:1px solid #ffffff17;border-radius:18px;overflow:hidden;background:#ffffff12}
+.c-company div{padding:14px 18px;background:#121016}.c-company div.wide{grid-column:1/-1}
+.c-company dt{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8f879a;margin-bottom:4px}.c-company dd{margin:0;font-size:15px;color:#fff}
+@media(max-width:760px){.c-company{grid-template-columns:1fr 1fr}}
