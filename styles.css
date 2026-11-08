@@ -1455,3 +1455,20 @@ main .cw-preview .eyebrow{display:block}
 @media(max-width:1050px){.k-path-grid{grid-template-columns:1fr;gap:40px}.k-path-head{position:static}}
 @media(prefers-reduced-motion:reduce){.kp-line i{transform:none}.k-path li .kp-ic{color:#f0b3f4}.k-path li b{color:#fff}.k-path li>div>span{color:#b5adbf}}
 .k-path-head h2{font-size:clamp(32px,3.6vw,54px);line-height:1.06;letter-spacing:-.04em}
+/* ===== Team in tiers (as in the web-app redesign) and support cards pushed to the right ===== */
+.team-grid.team-tiers{display:grid;grid-template-columns:1fr;gap:12px}
+.team-row{display:grid;gap:12px}
+.team-row.r2{grid-template-columns:repeat(2,minmax(0,1fr));max-width:860px;width:100%;margin:0 auto}
+.team-row.r3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.team-row.r4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.team-row.r2 .member{padding:18px 20px}.team-row.r2 .member img,.team-row.r2 .member-ini{width:72px;height:72px}.team-row.r2 .member b{font-size:18px}
+.team-row.r4 .member{padding:12px 14px}.team-row.r4 .member-ini{width:48px;height:48px;font-size:16px}.team-row.r4 .member b{font-size:15px}.team-row.r4 .member small{font-size:12px}
+@media(min-width:1201px){
+ .team-head{grid-template-columns:minmax(0,1fr) 560px}
+ .support-ui{justify-self:end;width:560px;height:470px;position:relative}
+ .support-ui .call-card{position:absolute;right:0;left:auto;top:0}
+ .support-ui .week-card{position:absolute;left:0;right:auto;bottom:0}
+}
+@media(max-width:1000px){.team-row.r4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.team-row.r2,.team-row.r3{grid-template-columns:1fr 1fr}.team-row.r3 .member:last-child{grid-column:1/-1}}
+@media(max-width:760px){.team-row.r2{grid-template-columns:1fr}.team-row.r2 .member{flex-direction:row;text-align:left;padding:14px 16px}}
