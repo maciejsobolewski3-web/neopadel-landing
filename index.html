@@ -2187,10 +2187,11 @@ window.mountCourt3d = (function () {
       const turfMat = new THREE.MeshStandardMaterial({ map: bakeTurf(m, TURFS[turf]), roughness: .95 });
       box3(W, .06, L, 0, -.03, 0, turfMat, false);
       ground.material.map && ground.material.map.dispose(); ground.material.map = bakeGround(m); ground.material.needsUpdate = true;
-      // net with posts and a white top band
-      const nt = new THREE.Mesh(new THREE.PlaneGeometry(W, .88), M.net.clone()); nt.material.map = M.net.map.clone(); nt.material.map.needsUpdate = true; nt.material.map.repeat.set(W * 22, 20); nt.position.set(0, .45, 0); court.add(nt);
-      box3(W, .06, .02, 0, .89, 0, M.white, false);
-      [-hw - .05, hw + .05].forEach(x => box3(.08, 1, .08, x, .5, 0, M.white));
+      // net with posts and a white top band, all inside the side walls
+      const nw = W - .2;
+      const nt = new THREE.Mesh(new THREE.PlaneGeometry(nw, .88), M.net.clone()); nt.material.map = M.net.map.clone(); nt.material.map.needsUpdate = true; nt.material.map.repeat.set(nw * 22, 20); nt.position.set(0, .45, 0); court.add(nt);
+      box3(nw, .06, .02, 0, .89, 0, M.white, false);
+      [-nw / 2 - .04, nw / 2 + .04].forEach(x => box3(.08, 1, .08, x, .5, 0, M.white));
       // back walls: glass panels 2 m wide, mesh above when the model has it
       [-hl, hl].forEach(z => {
         const n = Math.round(W / 2);
