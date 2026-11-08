@@ -1246,3 +1246,73 @@ main .eyebrow{display:none}
 main .cw-preview .eyebrow{display:block}
 .real-note,.demo-caption{display:none!important}
 .real-note.keep{display:block!important}
+/* ===== Court build process (korty): scenes ===== */
+.cb .ob-stage{aspect-ratio:16/10}
+.cbs-map{position:relative;width:min(100%,560px);aspect-ratio:16/10;border-radius:20px;overflow:hidden;background:#141119;border:1px solid #ffffff1f;box-shadow:0 30px 80px #000a}
+.cbs-grid{position:absolute;inset:0;background-image:linear-gradient(#ffffff0d 1px,transparent 1px),linear-gradient(90deg,#ffffff0d 1px,transparent 1px);background-size:28px 28px}
+.cbs-plot{position:absolute;left:18%;top:20%;width:46%;height:52%;border:2px dashed #d277d9;border-radius:6px;background:#c02bc914;transform:scale(.9);opacity:0}
+.cbs-plot span{position:absolute;left:8px;top:6px;font-size:11px;color:#f0b3f4}
+.ob-scene.on .cbs-plot{animation:obin .6s .5s forwards}
+.cbs-pin{position:absolute;left:41%;top:46%;width:26px;height:26px;margin:-26px 0 0 -13px;opacity:0;transform:translateY(-30px)}
+.cbs-pin i{position:absolute;inset:0;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:linear-gradient(135deg,#c02bc9,#6f3fe0);box-shadow:0 6px 18px #c02bc988}
+.cbs-pin:after{content:'';position:absolute;left:50%;bottom:-6px;width:18px;height:6px;margin-left:-9px;border-radius:50%;background:#0006}
+.ob-scene.on .cbs-pin{animation:pindrop .55s cubic-bezier(.3,1.6,.5,1) .2s forwards}
+@keyframes pindrop{to{opacity:1;transform:none}}
+.cbs-brief{position:absolute;right:5%;bottom:7%;width:auto;padding:14px 16px;gap:4px;opacity:0;transform:translateY(10px)}
+.cbs-brief b{font-size:15px!important}.cbs-brief .obs-chips{padding:4px 0 0}
+.ob-scene.on .cbs-brief{animation:obin .5s 1.1s forwards}
+.cbs-pick{width:min(100%,460px)}
+.cbs-models{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:4px}
+.cbs-model{border-radius:12px;overflow:hidden;background:#fff;border:2px solid transparent;transition:border-color .3s}
+.cbs-model img{width:100%;aspect-ratio:4/3;object-fit:contain}
+.cbs-model span{display:block;font-size:10px;font-weight:600;color:#1b1622;padding:4px 6px 6px}
+.ob-scene.on .cbs-model.sel{animation:cbsel .01s .6s forwards}
+@keyframes cbsel{to{border-color:#d277d9;box-shadow:0 0 0 3px #c02bc944}}
+.cbs-sw{flex:none;width:22px;height:22px;border-radius:50%;background:#2f6fe0;box-shadow:0 0 0 3px #17131e,0 0 0 4px #ffffff40}
+.cbs-ground{position:relative;width:min(100%,520px);display:grid;gap:0}
+.cbs-layers{display:grid;border-radius:16px;overflow:hidden;box-shadow:0 30px 80px #000a}
+.cbs-layer{display:flex;justify-content:space-between;align-items:center;padding:0 18px;height:58px;opacity:0;transform:translateY(-14px)}
+.cbs-layer b{font-size:14px}.cbs-layer small{font-size:12px;opacity:.75}
+.cbs-layer.l0{background:#2f6fe0;color:#fff}.cbs-layer.l1{background:#5b5466;color:#fff}.cbs-layer.l2{background:repeating-linear-gradient(45deg,#3a3341,#3a3341 6px,#332d39 6px,#332d39 12px);color:#ddd}.cbs-layer.l3{background:#1d2b3a;color:#bcd6f5}
+.ob-scene.on .cbs-layer.l3{animation:obin .45s .2s forwards}.ob-scene.on .cbs-layer.l2{animation:obin .45s .6s forwards}.ob-scene.on .cbs-layer.l1{animation:obin .45s 1s forwards}.ob-scene.on .cbs-layer.l0{animation:obin .45s 1.4s forwards}
+.cbs-drops{position:absolute;left:46%;bottom:14px;display:flex;gap:10px}
+.cbs-drops i{width:6px;height:10px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:#7fb5ff;opacity:0}
+.ob-scene.on .cbs-drops i{animation:drip 1.2s ease-in infinite 1.8s}.ob-scene.on .cbs-drops i:nth-child(2){animation-delay:2.1s}.ob-scene.on .cbs-drops i:nth-child(3){animation-delay:2.4s}
+@keyframes drip{0%{opacity:0;transform:translateY(-10px)}30%{opacity:1}100%{opacity:0;transform:translateY(16px)}}
+.cbs-prod{width:min(100%,480px);display:grid;gap:18px}
+.cbs-chk i{flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid #ffffff38;position:relative}
+.ob-scene.on .cbs-chk i{animation:chkon .3s calc(.5s + var(--d)*.55s) forwards}
+.ob-scene.on .cbs-chk i:after{content:'';position:absolute;left:7px;top:3px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);opacity:0;animation:obfadein .2s calc(.6s + var(--d)*.55s) forwards}
+@keyframes chkon{to{background:linear-gradient(135deg,#c02bc9,#6f3fe0);border-color:transparent}}
+.cbs-road{position:relative;height:56px;border-radius:14px;background:#141119;border:1px solid #ffffff1a;overflow:hidden}
+.cbs-road:before{content:'';position:absolute;left:0;right:0;top:50%;border-top:2px dashed #ffffff22}
+.cbs-truck{position:absolute;left:-70px;top:10px;width:64px;height:32px}
+.cbs-truck svg{width:100%;height:100%;fill:#f0b3f4;stroke:#17131e;stroke-width:1.5}
+.ob-scene.on .cbs-truck{animation:truck 2.6s cubic-bezier(.5,0,.3,1) 1.8s forwards}
+@keyframes truck{to{left:calc(100% - 80px)}}
+.cbs-road em{position:absolute;right:14px;top:50%;translate:0 -50%;font-style:normal;font-size:11px;color:#a79db2;background:#141119;padding:0 6px}
+.cbs-build{width:min(100%,560px);display:grid;gap:14px}
+.cbs-render{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:16/10;border:1px solid #ffffff1f;box-shadow:0 30px 80px #000a}
+.cbs-render img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cbs-wipe{position:absolute;inset:0;background:#141119;clip-path:inset(0 0 0 0)}
+.cbs-wipe:after{content:'';position:absolute;top:0;bottom:0;left:0;width:3px;background:linear-gradient(#f0b3f4,#9a7af7);box-shadow:0 0 20px #d277d9}
+.ob-scene.on .cbs-wipe{animation:wipe 3.6s cubic-bezier(.6,0,.3,1) .3s forwards}
+@keyframes wipe{to{clip-path:inset(0 0 0 100%)}}
+.ob-scene.on .cbs-wipe:after{animation:wipeline 3.6s cubic-bezier(.6,0,.3,1) .3s forwards}
+@keyframes wipeline{to{left:100%}}
+.cbs-steps{display:flex;flex-wrap:wrap;gap:6px}
+.cbs-steps span{font-size:11px;padding:6px 11px;border-radius:999px;background:#ffffff0c;border:1px solid #ffffff1a;color:#cfc8d6;opacity:.35}
+.ob-scene.on .cbs-steps span{animation:stepon .3s calc(.5s + var(--d)*.7s) forwards}
+@keyframes stepon{to{opacity:1;background:#c02bc92b;border-color:#d277d9;color:#fff}}
+.cbs-ready{position:relative;width:min(100%,560px);display:flex;align-items:flex-end}
+.cbs-photo{position:relative;flex:1;aspect-ratio:16/10;border-radius:18px;background:center/cover;border:1px solid #ffffff1f;box-shadow:0 30px 80px #000a;opacity:0;transform:scale(.97)}
+.ob-scene.on .cbs-photo{animation:obin .6s .1s forwards}
+.cbs-photo .obs-online{top:14px;right:14px}
+.cbs-phone{position:absolute;right:-4%;bottom:-8%;width:140px}
+.ob-scene.on .cbs-phone{animation:obin .6s .7s forwards}
+@media(max-width:760px){.cbs-phone{width:110px;right:0}.cbs-layer{height:48px}.cbs-models span{font-size:9px}}
+@media(max-width:1050px){.ob-grid{grid-template-columns:minmax(0,1fr)}}.ob-stage,.ob-steps{min-width:0}
+@media(max-width:760px){.cb .ob-stage{aspect-ratio:auto;height:400px}.cbs-models{gap:5px}.cbs-pick,.cbs-prod,.cbs-ground,.cbs-build,.cbs-ready,.cbs-map{width:100%}}
+@media(max-width:760px){.cbs-photo .obs-online{left:12px;right:auto;top:12px}}
+.as-tile{text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%}
+.as-link-plain{background:none;border:0;font:inherit;cursor:pointer;color:inherit}
