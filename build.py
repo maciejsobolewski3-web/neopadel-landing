@@ -31,6 +31,7 @@ js=(root/'app.js').read_text()
 shell=(root/'shell.html').read_text()
 # three.js r128 (from Olek's concept) and the court configurator are inlined like the rest.
 three=(root/'vendor'/'three.min.js').read_text(); court3d=(root/'court3d.js').read_text()
+shell=shell.replace('<!-- REGULAMIN -->',(root/'regulamin-klubow.html').read_text())
 html=shell.replace('/* STYLES */',css).replace('/* THREE */',three).replace('/* COURT3D */',court3d).replace('/* DATA */',data).replace('/* APP */',js)
 # A single portable file. The images are embedded so it works from file:// offline.
 mimes={'.png':'image/png','.jpg':'image/jpeg','.webp':'image/webp','.mp4':'video/mp4'}

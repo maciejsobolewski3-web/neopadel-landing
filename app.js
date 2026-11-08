@@ -222,7 +222,7 @@ function cwStepBody(s) {
   if (s === 0) return `<h2>Jak nazywa się Twój klub?</h2><p class="cw-lead">To zobaczą gracze w aplikacji. Wszystko zmienisz później w panelu.</p><div class="cw-grid">${field('name', 'Nazwa klubu', { wide: 1, ph: 'np. Padel Park Rzeszów' })}${field('desc', 'Opis klubu', { wide: 1, area: 1, ph: 'Kilka zdań o klubie: ile kortów, hala czy plener, co Was wyróżnia.' })}</div><div class="cw-uploads">${upload('cover', 'Zdjęcie w tle', 'Najlepiej kort albo hala, poziome')}${upload('logo', 'Logo', 'Kwadratowe, na jasnym lub ciemnym tle')}</div>`;
   if (s === 1) return `<h2>Gdzie jest klub?</h2><p class="cw-lead">Adres pokażemy graczom i użyjemy na fakturach. Dokładną pinezkę ustawisz w panelu.</p><div class="cw-grid">${field('line1', 'Ulica i numer', { wide: 1, ph: 'ul. Kineskopowa 1E', ac: 'address-line1' })}${field('line2', 'Lokal, piętro, budynek', { opt: 1, ac: 'address-line2' })}${field('postal', 'Kod pocztowy', { ph: '05-500', ac: 'postal-code' })}${field('city', 'Miasto', { ac: 'address-level2' })}${field('state', 'Województwo', { select: WOJ })}${field('country', 'Kraj', { ph: 'Polska' })}</div>`;
   if (s === 2) return `<h2>Jak gracze mogą się z Wami skontaktować?</h2><p class="cw-lead">Pokażemy te dane na stronie klubu w aplikacji.</p><div class="cw-grid">${field('email', 'E-mail klubu', { type: 'email', ph: 'kontakt@twojklub.pl', ac: 'email' })}${field('phone', 'Telefon', { type: 'tel', ph: '+48 500 000 000', ac: 'tel' })}${field('website', 'Strona www', { opt: 1, wide: 1, ph: 'https://twojklub.pl', ac: 'url' })}</div>`;
-  if (s === 3) return `<h2>Dane do weryfikacji</h2><p class="cw-lead">Klub aktywujemy po sprawdzeniu, że firma istnieje. Panel działa od razu, weryfikacja trwa zwykle 1–2 dni robocze.</p><div class="cw-grid">${field('nip', 'NIP firmy', { wide: 1, mode: 'numeric', ph: '0000000000', help: 'Sprawdzamy poprawność numeru (10 cyfr z cyfrą kontrolną).' })}</div><label class="cw-check"><input type="checkbox" name="rep" ${cw.d.rep ? 'checked' : ''}> <span>Oświadczam, że reprezentuję ten klub i mogę zarządzać jego danymi.</span></label>`;
+  if (s === 3) return `<h2>Dane do weryfikacji</h2><p class="cw-lead">Klub aktywujemy po sprawdzeniu, że firma istnieje. Panel działa od razu, weryfikacja trwa zwykle 1–2 dni robocze.</p><div class="cw-grid">${field('nip', 'NIP firmy', { wide: 1, mode: 'numeric', ph: '0000000000', help: 'Sprawdzamy poprawność numeru (10 cyfr z cyfrą kontrolną).' })}</div><label class="cw-check"><input type="checkbox" name="rep" ${cw.d.rep ? 'checked' : ''}> <span>Oświadczam, że reprezentuję ten klub i mogę zarządzać jego danymi.</span></label><label class="cw-check"><input type="checkbox" name="terms" ${cw.d.terms ? 'checked' : ''}> <span>Akceptuję <a href="#/regulamin-klubow" target="_blank" rel="noopener">Regulamin NeoPadel dla Klubów</a>, w tym prowizję 3% od płatności online.</span></label>`;
   const d = cw.d, row = (t, v, opt) => `<div><dt>${t}</dt><dd>${esc(v) || (opt ? '<span class="cw-none">nie podano</span>' : '<em>brak</em>')}</dd></div>`;
   return `<h2>Wszystko gotowe?</h2><p class="cw-lead">Po utworzeniu klubu od razu przejdziesz do panelu. My w tym czasie zweryfikujemy dane firmy.</p><dl class="cw-sum">${row('Nazwa', d.name)}${row('Adres', [d.line1, d.line2, [d.postal, d.city].filter(Boolean).join(' '), d.state].filter(Boolean).join(', '))}${row('Kontakt', [d.email, d.phone].filter(Boolean).join(' · '))}${row('Strona', d.website, 1)}${row('NIP', d.nip)}</dl><div class="cw-next"><b>Co dalej w panelu</b><span>Korty</span><span>Cennik i godziny</span><span>Płatności online</span><span>Zespół klubu</span></div>`;
 }
@@ -234,6 +234,7 @@ function cwValid(s) {
   if (s === 2 && d.phone.replace(/\D/g, '').length < 9) return 'Podaj numer telefonu (min. 9 cyfr).';
   if (s === 3 && !nipValid(d.nip)) return 'NIP jest niepoprawny. Sprawdź 10 cyfr.';
   if (s === 3 && !d.rep) return 'Potwierdź, że reprezentujesz klub.';
+  if (s === 3 && !d.terms) return 'Zaakceptuj Regulamin dla Klubów.';
   return '';
 }
 function clubWizardPage() {
@@ -380,8 +381,23 @@ function initCount() {
   const io = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; io.unobserve(e.target); const el = e.target, to = Number(el.dataset.count), suf = el.dataset.suffix || '', t0 = performance.now(), dur = 1400; const f = t => { const k = Math.min(1, (t - t0) / dur), v = Math.round(to * (1 - Math.pow(1 - k, 3))); el.textContent = v + suf; if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); }), { threshold: .6 });
   $$('[data-count]').forEach(el => io.observe(el));
 }
-const routes = {'':home,konto:accountPage,'nowy-klub':clubWizardPage,platforma:appPage,aplikacja:appPage,budowa:courtsPage,korty:courtsPage,autonomia:autonomy,sklep:shop,gracze:players,realizacje:projects,wiedza:knowledge,'o-nas':about,rozwiazania:about,kontakt:contact,opinie:opinions,pobierz:download};
-const routeTitles = {'':'Twój klub. Twój system.',konto:'Twoje konto','nowy-klub':'Stwórz klub',platforma:'Aplikacja',aplikacja:'Aplikacja',budowa:'Korty',korty:'Korty',autonomia:'Korty autonomiczne',sklep:'Sklep partnerski',gracze:'Dla graczy',realizacje:'Realizacje',wiedza:'Poradniki','o-nas':'O nas',rozwiazania:'Rozwiązania',kontakt:'Kontakt',opinie:'Opinie',pobierz:'Pobierz aplikację'};
+// Terms for clubs: the text comes from the working draft (output/regulamin-klubow, build-fragment.py), inlined by build.py.
+const RG_KEY = [['0 zł', 'Konto, klub i Panel', 'Wszystkie funkcje bez abonamentu.'], ['3%', 'Prowizja od płatności online', '2% przy płatności dzielonej. Tylko tam, gdzie płaci Stripe.'], ['0%', 'Rezerwacje ręczne', 'Płatności w klubie bez prowizji.'], ['Pn', 'Wypłaty co tydzień', 'W poniedziałek, za rezerwacje do niedzieli.'], ['1×', 'Faktura raz w miesiącu', 'Zbiorcza faktura VAT na prowizję.'], ['0', 'Umów do podpisania', 'Wypowiadasz w każdej chwili.']];
+function termsPage() {
+  const src = document.getElementById('tpl-regulamin'), html = src ? src.innerHTML : '';
+  const toc = [...html.matchAll(/<section id="(r-\d+)" class="rg-sec"><h2>(.*?)<\/h2>/g)].map(([, id, t]) => `<li><button type="button" data-rg="${id}">${t}</button></li>`).join('');
+  return `<section class="rg-hero dark-section"><div class="wrap"><span class="ts-chip rg-chip"><i></i>Projekt · wersja z 8 listopada 2026</span>${kin('Regulamin *dla Klubów.*', 'h1', 'kinetic-big')}<p class="k-lead" data-reveal>Zasady korzystania z Panelu Klubu i usług NeoPadel. Nie podpisujesz żadnej umowy: regulamin akceptujesz przy zakładaniu klubu.</p><div class="rg-key" data-reveal>${RG_KEY.map(([v, t, d], i) => `<div class="rg-kpi" style="--i:${i}"><b>${v}</b><span>${t}</span><small>${d}</small></div>`).join('')}</div></div></section>
+<section class="rg-body dark-section"><div class="wrap rg-grid"><nav class="rg-toc" aria-label="Spis treści"><p>Spis treści</p><ol>${toc}</ol><button class="button rg-cta" data-auth="signup">Załóż klub za darmo</button></nav><details class="rg-toc-m"><summary>Spis treści</summary><ol>${toc}</ol></details><article class="rg-doc">${html}</article></div></section>`;
+}
+function initTerms() {
+  const doc = $('.rg-doc'); if (!doc) return;
+  const links = $$('[data-rg]');
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) links.forEach(b => b.classList.toggle('on', b.dataset.rg === e.target.id)); }), { rootMargin: '-20% 0px -70% 0px' });
+  $$('.rg-sec', doc).forEach(sec => io.observe(sec));
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-rg]'); if (!b) return; const t = document.getElementById(b.dataset.rg); if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'start' }); const d = b.closest('details'); if (d) d.open = false; } });
+const routes = {'':home,konto:accountPage,'nowy-klub':clubWizardPage,'regulamin-klubow':termsPage,platforma:appPage,aplikacja:appPage,budowa:courtsPage,korty:courtsPage,autonomia:autonomy,sklep:shop,gracze:players,realizacje:projects,wiedza:knowledge,'o-nas':about,rozwiazania:about,kontakt:contact,opinie:opinions,pobierz:download};
+const routeTitles = {'':'Twój klub. Twój system.',konto:'Twoje konto','nowy-klub':'Stwórz klub','regulamin-klubow':'Regulamin dla Klubów',platforma:'Aplikacja',aplikacja:'Aplikacja',budowa:'Korty',korty:'Korty',autonomia:'Korty autonomiczne',sklep:'Sklep partnerski',gracze:'Dla graczy',realizacje:'Realizacje',wiedza:'Poradniki','o-nas':'O nas',rozwiazania:'Rozwiązania',kontakt:'Kontakt',opinie:'Opinie',pobierz:'Pobierz aplikację'};
 let firstRender=true;
 function route(){
  if(location.hash && !location.hash.startsWith('#/'))return;
@@ -412,6 +428,7 @@ function enhance(){
  $$('[data-network]').forEach(c=>network(c,still));
  mountConfigurator();
  initClubWizard();
+ initTerms();
  initObFlow();
  initScrub();
  initCount();
