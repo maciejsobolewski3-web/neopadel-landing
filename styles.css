@@ -1371,3 +1371,4 @@ main .cw-preview .eyebrow{display:block}
 @media(max-width:900px){.rg-grid{grid-template-columns:1fr;gap:20px}.rg-toc{display:none}.rg-toc-m{display:block;border:1px solid #ffffff1c;border-radius:14px;padding:4px 8px;background:#ffffff06}.rg-toc-m summary{cursor:pointer;padding:12px 8px;font-weight:500}.rg-toc-m ol{padding-bottom:8px}.rg-doc{font-size:15px}.rg-doc table{display:block;overflow-x:auto}}
 @media(max-width:600px){.rg-key{grid-template-columns:1fr 1fr}.rg-hero{padding:120px 0 20px}}
 .cw-check a{color:#e0b2e4;text-decoration:underline;text-underline-offset:3px}
+.rg-doc ol+p{margin-top:18px}
